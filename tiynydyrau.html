@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Тиын және ыдырау — жартылай ыдырау периодын модельдеу</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4fcfa; --card:#ffffff; --ink:#17383a; --muted:#587a7c; --line:#d5ebe8;
+  --acc:#139d92; --acc-d:#0b6f68; --acc-l:#dff6f3; --gold:#f5b942; --gold-l:#fff1d1; --coral:#f2765f;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0; background:linear-gradient(180deg,#f4fcfa 0%,#fffaf0 100%); background-color:#f4fcfa; color:var(--ink);
+  font-family:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; line-height:1.6; font-size:16px}
+a{color:var(--acc-d)}
+.wrap{max-width:1080px; margin:0 auto; padding:0 16px}
+
+nav.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:rgba(244,252,250,.93); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:10px; padding-bottom:10px; scrollbar-width:none}
+nav.top a{flex:none; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px; padding:7px 14px; border-radius:999px; background:#fff; border:1px solid var(--line)}
+nav.top a:hover,nav.top a:focus-visible{background:var(--acc-l); border-color:var(--acc); outline:none}
+
+header.hero{position:relative; overflow:hidden; padding:44px 0 70px}
+.hero h1{font-size:clamp(34px,7vw,62px); line-height:1.06; margin:14px 0 14px; font-weight:900; letter-spacing:-.02em; color:#0e4d49; max-width:660px}
+.hero p.lead{font-size:clamp(16px,2.4vw,20px); max-width:600px; color:var(--muted); margin:0 0 22px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:#fff; border:1px solid var(--line); padding:5px 12px; border-radius:999px; font-size:13px; font-weight:700; color:var(--acc-d)}
+.btn{display:inline-block; border:0; cursor:pointer; font:inherit; font-weight:800; padding:11px 20px; border-radius:14px; background:var(--acc); color:#fff; text-decoration:none; box-shadow:0 6px 16px rgba(19,157,146,.28); transition:transform .15s, background .15s}
+.btn:hover{background:var(--acc-d); transform:translateY(-1px)}
+.btn.alt{background:#fff; color:var(--acc-d); border:1.5px solid var(--acc); box-shadow:none}
+.btn.alt:hover{background:var(--acc-l)}
+.btn.gold{background:var(--gold); color:#4a3200; box-shadow:0 6px 16px rgba(245,185,66,.35)}
+.btn.gold:hover{background:#eaa921}
+.btn.sm{padding:8px 14px; font-size:14px; border-radius:12px; box-shadow:none}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid #ffb74d; outline-offset:2px}
+.btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+.btns{display:flex; flex-wrap:wrap; gap:8px}
+.hero-art{position:absolute; right:2%; top:24px; width:min(38vw,380px)}
+@media (max-width:760px){.hero-art{opacity:.35; width:70vw; right:-12vw}}
+
+section{padding:44px 0 6px}
+.sh{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:6px}
+.sh h2{margin:0; font-size:clamp(24px,4vw,34px); font-weight:900; color:#0e4d49}
+.sh h2 a{color:inherit; text-decoration:none}
+.sh h2 a:hover{text-decoration:underline}
+.linkbtn{font:inherit; font-size:13px; font-weight:700; background:#fff; border:1px dashed var(--acc); color:var(--acc-d); border-radius:999px; padding:4px 12px; cursor:pointer}
+.linkbtn:hover{background:var(--acc-l)}
+.sub{color:var(--muted); margin:0 0 18px; max-width:760px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:20px; box-shadow:0 10px 28px rgba(23,56,58,.06)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.task{background:linear-gradient(135deg,#fff 0%,var(--gold-l) 100%); border-left:6px solid var(--gold); font-size:17px}
+.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.steps li{counter-increment:s; position:relative; padding:12px 14px 12px 56px; background:#fff; border:1px solid var(--line); border-radius:16px}
+.steps li::before{content:counter(s); position:absolute; left:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--acc-l); color:var(--acc-d); font-weight:900; display:grid; place-items:center}
+.formula{font-size:clamp(17px,3vw,22px); font-weight:800; background:var(--acc-l); border-radius:14px; padding:12px 14px; margin:10px 0; overflow-x:auto; white-space:nowrap}
+.note{font-size:13.5px; color:var(--muted)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+th{background:#eaf7f5; color:#0e4d49}
+.ul{margin:0; padding-left:20px}
+.ul li{margin:6px 0}
+.coin{display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; font-weight:900; font-size:14px; vertical-align:middle; margin-right:6px}
+.coin.h{background:radial-gradient(circle,#ffe08a,#e5a92d); color:#7a4f00; border:2px solid #c98c1e}
+.coin.t{background:radial-gradient(circle,#f6fafc,#b9c7d3); color:#4b5f6f; border:2px solid #8fa2b2}
+
+.lab{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:16px; align-items:start}
+@media (max-width:900px){.lab{grid-template-columns:1fr}}
+.stage{position:relative; border-radius:22px; overflow:hidden; border:1px solid var(--line); height:450px;
+  background:linear-gradient(180deg,#e8f8f5 0%,#fff6e0 100%); background-color:#e8f8f5}
+@media (max-width:600px){.stage{height:380px}}
+#c3d{width:100%; height:100%; display:block; touch-action:pan-y; cursor:grab}
+#labels{position:absolute; inset:0; pointer-events:none}
+.vl{position:absolute; transform:translate(-50%,-50%); font-size:12px; font-weight:800; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:8px; padding:2px 8px; color:var(--ink); white-space:nowrap}
+.badge{position:absolute; left:10px; top:10px; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:14px; padding:7px 12px; font-weight:800; font-size:14px; line-height:1.45}
+.badge b{color:var(--acc-d)}
+.views{position:absolute; right:10px; top:10px; display:flex; gap:6px}
+.views button{font:inherit; font-size:12px; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.93); border-radius:10px; padding:5px 9px; cursor:pointer; color:var(--ink)}
+.views button:hover{background:var(--acc-l)}
+.hint{position:absolute; left:10px; bottom:8px; right:10px; font-size:12px; color:var(--muted); font-weight:700; pointer-events:none}
+.legend{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:12px; font-size:14px; font-weight:700}
+.ctl{display:grid; gap:14px}
+.ctl h3{margin:0 0 6px; font-size:15px; color:#0e4d49}
+input[type=range]{width:100%; accent-color:var(--acc); height:28px}
+.row{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-weight:700; font-size:14.5px}
+.row b{color:var(--acc-d); font-size:18px; white-space:nowrap}
+.chk{display:flex; gap:8px; align-items:center; font-weight:700; font-size:14.5px}
+.chk input{width:20px; height:20px; accent-color:var(--acc)}
+.read{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
+.read div{background:#f0fbf9; border:1px solid var(--line); border-radius:14px; padding:8px 10px}
+.read span{display:block; font-size:12px; color:var(--muted); font-weight:700}
+.read b{font-size:19px; color:#0e4d49}
+.status{border-radius:14px; padding:10px 12px; font-weight:700; font-size:14.5px; background:var(--gold-l); border:1px solid #ffd98a; color:#7a5200}
+.status.done{background:#e2f7ec; border-color:#9fdcb6; color:#14663a}
+
+canvas.plot{width:100%; display:block; background:#fff; border:1px solid var(--line); border-radius:18px}
+.sumlist{margin:10px 0 0; padding-left:20px}
+.q{margin-bottom:14px}
+.q p{font-weight:800; margin:0 0 8px}
+.opts{display:grid; gap:8px}
+.opt{font:inherit; text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:10px 14px; cursor:pointer; color:var(--ink); font-weight:600}
+.opt:hover{background:var(--acc-l)}
+.opt.ok{background:#d9f6e7; border-color:#43c585}
+.opt.bad{background:#ffe3e8; border-color:#ff8aa1}
+.exp{font-size:14px; color:var(--muted); margin-top:6px; display:none}
+.score{font-size:20px; font-weight:900; color:var(--acc-d)}
+footer{margin-top:50px; padding:26px 0 40px; background:#dff2ef; color:var(--muted); font-size:14px}
+#toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%) translateY(30px); background:#0e4d49; color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; opacity:0; transition:.25s; z-index:99; pointer-events:none}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Бөлімдер">
+  <div class="wrap">
+    <a href="#intro">Кіріспе</a>
+    <a href="#theory">Теория</a>
+    <a href="#lab">3D зертхана</a>
+    <a href="#analysis">Талдау</a>
+    <a href="#journal">Журнал</a>
+    <a href="#test">Тест</a>
+    <a href="#conclusion">Қорытынды</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="chips"><span class="chip">Шығармашылық тапсырма · 215-бет</span><span class="chip">3D виртуалды зертхана</span><span class="chip">Атом және ядро физикасы</span></div>
+    <h1>Тиынмен ядроның ыдырауын модельдейміз</h1>
+    <p class="lead">Жүз тиынды лақтырып, радиоактивті ядролардың жартысы қанша уақытта ыдырайтынын, яғни жартылай ыдырау периодын тәжірибе арқылы анықтаймыз.</p>
+    <div class="btns"><a class="btn gold" href="#lab">Зертханаға өту</a><a class="btn alt" href="#theory">Теорияны оқу</a></div>
+  </div>
+  <svg class="hero-art" viewBox="0 0 380 260" aria-hidden="true">
+    <defs>
+      <radialGradient id="gg" cx="40%" cy="35%"><stop offset="0" stop-color="#ffe9a6"/><stop offset="1" stop-color="#e5a92d"/></radialGradient>
+      <radialGradient id="sg" cx="40%" cy="35%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#b9c7d3"/></radialGradient>
+    </defs>
+    <g stroke-width="5">
+      <circle cx="70" cy="70" r="40" fill="url(#gg)" stroke="#c98c1e"/><circle cx="160" cy="70" r="40" fill="url(#gg)" stroke="#c98c1e"/><circle cx="250" cy="70" r="40" fill="url(#gg)" stroke="#c98c1e"/><circle cx="340" cy="70" r="40" fill="url(#sg)" stroke="#8fa2b2"/>
+      <circle cx="115" cy="165" r="40" fill="url(#gg)" stroke="#c98c1e"/><circle cx="205" cy="165" r="40" fill="url(#sg)" stroke="#8fa2b2"/><circle cx="295" cy="165" r="40" fill="url(#sg)" stroke="#8fa2b2"/>
+      <circle cx="160" cy="235" r="22" fill="url(#sg)" stroke="#8fa2b2"/>
+    </g>
+    <g font-family="Nunito, sans-serif" font-weight="900" font-size="34" text-anchor="middle" fill="#7a4f00">
+      <text x="70" y="82">Е</text><text x="160" y="82">Е</text><text x="250" y="82">Е</text><text x="115" y="177">Е</text>
+    </g>
+    <g font-family="Nunito, sans-serif" font-weight="900" font-size="34" text-anchor="middle" fill="#4b5f6f">
+      <text x="340" y="82">С</text><text x="205" y="177">С</text><text x="295" y="177">С</text>
+    </g>
+  </svg>
+</header>
+
+<main class="wrap">
+
+<section id="intro">
+  <div class="sh"><h2><a href="#intro">Кіріспе: тапсырма</a></h2><button class="linkbtn" data-id="intro">Сілтемені көшіру</button></div>
+  <p class="sub">Бұл бөлімде тапсырма шарты, мақсаты және нақты тәжірибенің барысы берілген.</p>
+  <div class="card task">
+    <b>Шығармашылық тапсырма (215-бет):</b> 100 дана тиынды пайдаланып, радиоактивті ядролардың жартысының ыдырау ықтималдығын (жартылай ыдырау периодын) модельдеу тәжірибесін жүргізіңіз.
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3 style="margin-top:0">Модельдің идеясы</h3>
+      <ul class="ul">
+        <li>Әр тиын — бір радиоактивті ядро.</li>
+        <li>Тиынды лақтыру — белгілі бір уақыт аралығы (бір период).</li>
+        <li><span class="coin h">Е</span>Елтаңба түссе, ядро ыдырады. Тиынды алып тастаймыз.</li>
+        <li><span class="coin t">С</span>Сан түссе, ядро ыдырамады. Тиын қалады.</li>
+        <li>Қалған тиындарды қайта лақтырамыз.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Нақты тәжірибенің барысы</h3>
+      <ol class="steps">
+        <li>100 тиынды алып, бір реттен лақтырыңыз.</li>
+        <li>Елтаңба түскендерін санап, бөлек алып қойыңыз.</li>
+        <li>Қалған тиындарды санап, кестеге жазыңыз.</li>
+        <li>Тиындар біткенше қайталап, N-нің t-ға тәуелділік графигін салыңыз.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="theory">
+  <div class="sh"><h2><a href="#theory">Теориялық негіз</a></h2><button class="linkbtn" data-id="theory">Сілтемені көшіру</button></div>
+  <p class="sub">Радиоактивті ыдырау кездейсоқ құбылыс. Бір ядроның қашан ыдырайтынын болжау мүмкін емес, бірақ көп ядроның орташа тәртібін дәл есептеуге болады.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">1. Ыдырау заңы</h3>
+      <p>Уақыт өткен сайын ыдырамаған ядролар саны кемиді.</p>
+      <div class="formula">N = N₀ · 2<sup>−t/T</sup></div>
+      <p class="note">N₀ — бастапқы ядролар саны, N — t уақыттан кейінгі саны, T — жартылай ыдырау периоды.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">2. Жартылай ыдырау периоды</h3>
+      <p>Ядролардың жартысы ыдырайтын уақыт T деп аталады. Тиынмен модельде ыдырау ықтималдығы p = 0,5, сондықтан бір лақтыру кезінде жартысы ыдырайды: T = 1 лақтыру.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">3. Ықтималдық пен период</h3>
+      <p>Бір лақтырудағы ыдырау ықтималдығы p болса, N<sub>k+1</sub> ≈ N<sub>k</sub>·(1 − p). Сонда:</p>
+      <div class="formula">λ = −ln(1 − p),&nbsp; T = ln 2 / λ</div>
+      <p class="note">p = 0,5 болғанда λ = ln 2 ≈ 0,693 және T = 1. Зертханада p мәнін өзгертіп, басқа «изотоптарды» модельдеуге болады.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">4. Эксперименттен периодты табу</h3>
+      <p>ln N мен t арасындағы байланыс түзу сызық болады. Оның еңісі −λ-ге тең.</p>
+      <div class="formula">ln N = ln N₀ − λ · t</div>
+      <p class="note">Зертхана тәжірибелік нүктелер бойынша түзуді (ең кіші квадраттар әдісімен) автоматты түрде жүргізіп, T-ны есептейді.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin-top:0">Күтілетін нәтиже (p = 0,5, N₀ = 100)</h3>
+    <div class="scroll"><table>
+      <tr><th>Лақтыру саны t</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+      <tr><td>Қалған тиын N</td><td>100</td><td>50</td><td>25</td><td>≈ 12</td><td>≈ 6</td><td>≈ 3</td><td>≈ 2</td><td>≈ 1</td></tr>
+    </table></div>
+    <p class="note" style="margin-bottom:0">Нақты тәжірибеде сандар аздап ауытқиды, себебі ыдырау кездейсоқ.</p>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sh"><h2><a href="#lab">3D виртуалды зертхана</a></h2><button class="linkbtn" data-id="lab">Сілтемені көшіру</button></div>
+  <p class="sub">Сол жақтағы науада ыдырамаған ядролар (тиындар) тұр. «Лақтыру» батырмасын басқанда барлық тиын ұшады. Елтаңба түскендері оң жақтағы ыдыраған ядролар науасына ауысады.</p>
+  <div class="lab">
+    <div>
+      <div class="stage" id="stage">
+        <canvas id="c3d" aria-label="Тиындардың 3D көрінісі"></canvas>
+        <div id="labels"></div>
+        <div class="badge" id="badge"></div>
+        <div class="views">
+          <button data-view="top">Жоғарыдан</button>
+          <button data-view="angle">Бұрыштан</button>
+          <button data-view="side">Қырынан</button>
+        </div>
+        <div class="hint">Сахнаны сүйреп айналдыруға болады</div>
+      </div>
+      <div class="legend">
+        <span><span class="coin h">Е</span>Елтаңба: ядро ыдырады</span>
+        <span><span class="coin t">С</span>Сан: ядро ыдырамады</span>
+      </div>
+    </div>
+
+    <div class="card ctl">
+      <div>
+        <div class="row"><span>Бастапқы тиын (ядро) саны N₀</span><b id="v1"></b></div>
+        <input type="range" id="s1" min="20" max="500" step="10" aria-label="Бастапқы сан">
+      </div>
+      <div>
+        <div class="row"><span>Ыдырау ықтималдығы p</span><b id="v2"></b></div>
+        <input type="range" id="s2" min="0.1" max="0.9" step="0.05" aria-label="Ықтималдық">
+        <div class="note" id="theoNote"></div>
+      </div>
+      <div class="btns">
+        <button class="btn gold" id="bThrow">Лақтыру</button>
+        <button class="btn" id="bAuto">Автоматты ойнату</button>
+        <button class="btn sm alt" id="bFast">Толық тәжірибе лезде</button>
+        <button class="btn sm alt" id="bReset">Қайта бастау</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="cAnim" checked> Лақтыру анимациясын көрсету</label>
+      <div class="status" id="status"></div>
+      <div class="read">
+        <div><span>Лақтыру саны t</span><b id="rT">0</b></div>
+        <div><span>Қалған ядро N</span><b id="rN">—</b></div>
+        <div><span>Соңғы лақтыруда ыдыраған үлес</span><b id="rFrac">—</b></div>
+        <div><span>Жартылай ыдырау периоды T (тәжірибе)</span><b id="rTh">—</b></div>
+      </div>
+      <button class="btn sm" id="bLog">Нәтижені журналға жазу</button>
+    </div>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="sh"><h2><a href="#analysis">Талдау: график және кесте</a></h2><button class="linkbtn" data-id="analysis">Сілтемені көшіру</button></div>
+  <p class="sub">Графиктер тәжірибе барысында бірден жаңарып отырады. Сонымен қатар 20 тәжірибені лезде орындап, орташа нәтижені көруге болады.</p>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">N-нің t-ға тәуелділігі</h3><canvas class="plot" id="ch1"></canvas></div>
+    <div class="card"><h3 style="margin-top:0">ln N-нің t-ға тәуелділігі</h3><canvas class="plot" id="ch2"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="btns" style="align-items:center">
+      <button class="btn" id="bStats">20 тәжірибе орындау</button>
+      <button class="btn sm alt" id="bStatsClr">Статистиканы тазалау</button>
+    </div>
+    <p class="note" id="statNote" style="margin-bottom:0">Статистика әзірге жоқ. Бірнеше тәжірибенің орташасы теориялық қисыққа жақынырақ болады.</p>
+  </div>
+  <div class="card scroll" style="margin-top:16px">
+    <h3 style="margin-top:0">Есептеу кестесі</h3>
+    <table id="tbl"></table>
+    <ul class="sumlist" id="summary"></ul>
+  </div>
+</section>
+
+<section id="journal">
+  <div class="sh"><h2><a href="#journal">Тәжірибе журналы</a></h2><button class="linkbtn" data-id="journal">Сілтемені көшіру</button></div>
+  <p class="sub">Аяқталған тәжірибелер осында автоматты түрде жазылады. Бірнеше тәжірибенің орташа нәтижесін есептеңіз.</p>
+  <div class="card">
+    <div class="btns" style="margin-bottom:12px">
+      <button class="btn sm alt" id="jDel">Соңғы жолды өшіру</button>
+      <button class="btn sm alt" id="jClear">Тазалау</button>
+      <button class="btn sm alt" id="jCopy">Кестені көшіру</button>
+    </div>
+    <div class="scroll"><table id="jTbl"></table></div>
+    <p class="note" id="jAvg" style="margin-bottom:0"></p>
+  </div>
+</section>
+
+<section id="test">
+  <div class="sh"><h2><a href="#test">Білімді тексер</a></h2><button class="linkbtn" data-id="test">Сілтемені көшіру</button></div>
+  <p class="sub">Алты сұраққа жауап беріңіз. Дұрыс жауап жасыл түспен көрсетіледі.</p>
+  <div class="card">
+    <div id="quiz"></div>
+    <div class="btns" style="align-items:center"><span class="score" id="score"></span><button class="btn sm alt" id="qReset">Қайта бастау</button></div>
+  </div>
+</section>
+
+<section id="conclusion">
+  <div class="sh"><h2><a href="#conclusion">Қорытынды</a></h2><button class="linkbtn" data-id="conclusion">Сілтемені көшіру</button></div>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Негізгі тұжырымдар</h3>
+      <ul class="ul">
+        <li>Әр лақтыруда ядролардың шамамен жартысы ыдырайды (p = 0,5), сондықтан жартылай ыдырау периоды бір лақтыруға тең.</li>
+        <li>Ыдырамаған ядролар саны экспоненциалды заңмен кемиді: N = N₀·2<sup>−t/T</sup>.</li>
+        <li>ln N-нің t-ға тәуелділігі түзу сызық, оның еңісі −λ.</li>
+        <li>Ыдырау кездейсоқ болғандықтан, бір тәжірибе теориядан аздап ауытқиды. Тәжірибе саны немесе тиын саны көбейген сайын нәтиже теорияға жақындайды.</li>
+        <li>Ыдырау ықтималдығы кіші болса, жартылай ыдырау периоды ұзақ болады.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Нақты тәжірибе үшін кеңес</h3>
+      <ul class="ul">
+        <li>100 бірдей тиын алып, үстелге емес, үлкен науаға лақтырыңыз.</li>
+        <li>Әр лақтырудан кейін елтаңбаларды санап, бөлек қойыңыз.</li>
+        <li>Тәжірибені 3–5 рет қайталап, орташа мәнді алыңыз.</li>
+        <li>Нәтижені симулятормен салыстырыңыз.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Бұл оқу симуляторы радиоактивті ыдырауды кездейсоқ процесс ретінде модельдейді. Нақты ядролардың ыдырауы да осындай статистикалық заңға бағынады.</div>
+</footer>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const fm=(x,d)=>x.toFixed(d).replace('.',',');
+
+/* ---------- Күй ---------- */
+const st={N0:100,p:.5,anim:true,auto:false};
+let N=0, throws=0, history=[], finished=false, saved=false, stats=null;
+const journal=[];
+const lam=()=>-Math.log(1-st.p), Th=()=>Math.LN2/lam();
+
+function fit(arr){
+  const pts=[]; arr.forEach((n,t)=>{ if(n>0) pts.push([t,Math.log(n)]); });
+  if(pts.length<2) return null;
+  const n=pts.length; let sx=0,sy=0,sxx=0,sxy=0;
+  pts.forEach(p=>{sx+=p[0];sy+=p[1];sxx+=p[0]*p[0];sxy+=p[0]*p[1];});
+  const den=n*sxx-sx*sx; if(Math.abs(den)<1e-9) return null;
+  const b=(n*sxy-sx*sy)/den, a=(sy-b*sx)/n; if(b>=0) return null;
+  return {lam:-b,a:a,T:Math.LN2/(-b)};
+}
+function simRun(N0,p){
+  const arr=[N0]; let n=N0, guard=0;
+  while(n>0&&guard++<300){ let d=0; for(let i=0;i<n;i++) if(Math.random()<p) d++; n-=d; arr.push(n); }
+  return arr;
+}
+
+/* ---------- 3D ---------- */
+let renderer,scene,camera,coinGeo,mats,coins=[],trayMesh,binMesh,webglOK=true;
+let az=0,el=.95,azT=0,elT=.95,dist=60,tx=0,drag=null;
+const stage=$('stage'), cv=$('c3d'), labelsEl=$('labels');
+const labs={tray:document.createElement('div'),bin:document.createElement('div')};
+labs.tray.className='vl'; labs.bin.className='vl'; labs.tray.textContent='Ыдырамаған ядролар'; labs.bin.textContent='Ыдыраған ядролар';
+labelsEl.appendChild(labs.tray); labelsEl.appendChild(labs.bin);
+let L={};
+let phase='idle', pt=0, activeList=[], binCount=0;
+
+function coinTex(kind){
+  const c=document.createElement('canvas'); c.width=c.height=128; const x=c.getContext('2d');
+  const g=x.createRadialGradient(54,50,8,64,64,70);
+  if(kind==='h'){g.addColorStop(0,'#ffe9a6');g.addColorStop(1,'#e2a52b');} else {g.addColorStop(0,'#ffffff');g.addColorStop(1,'#b3c2cf');}
+  x.fillStyle=g; x.fillRect(0,0,128,128);
+  x.strokeStyle=kind==='h'?'#b9801a':'#8497a8'; x.lineWidth=7; x.beginPath(); x.arc(64,64,54,0,7); x.stroke();
+  x.fillStyle=kind==='h'?'#7a4f00':'#44586a'; x.font='900 70px Nunito, sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(kind==='h'?'Е':'С',64,70);
+  return new THREE.CanvasTexture(c);
+}
+function layout(){
+  const cols=Math.ceil(Math.sqrt(st.N0*1.2)), rows=Math.ceil(st.N0/cols);
+  const sp=Math.min(2.5,30/cols), s=sp*.43, bsp=sp*.76;
+  const Wt=cols*sp, Ht=rows*sp, Wb=cols*bsp, Hb=rows*bsp;
+  L={cols:cols,rows:rows,sp:sp,s:s,bsp:bsp,Wt:Wt,Ht:Ht,Wb:Wb,Hb:Hb,xT:-(Wt/2+2.5),xB:(Wb/2+2.5)};
+  L.cx=(L.xB+L.xT)/2;
+}
+const homePos=i=>[L.xT-L.Wt/2+(i%L.cols+.5)*L.sp, -L.Ht/2+(Math.floor(i/L.cols)+.5)*L.sp];
+const binPos=i=>[L.xB-L.Wb/2+(i%L.cols+.5)*L.bsp, -L.Hb/2+(Math.floor(i/L.cols)+.5)*L.bsp];
+
+function init3D(){
+  try{ renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }
+  catch(e){ webglOK=false; stage.innerHTML='<div style="padding:30px;font-weight:700">Браузер WebGL технологиясын қолдамайды. Басқа браузермен ашып көріңіз.</div>'; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setClearColor(0x000000,0);
+  scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(40,1,1,500);
+  scene.add(new THREE.AmbientLight(0xffffff,.8));
+  const dl=new THREE.DirectionalLight(0xffffff,.7); dl.position.set(15,40,20); scene.add(dl);
+  coinGeo=new THREE.CylinderGeometry(1,1,.2,36);
+  const side=new THREE.MeshPhongMaterial({color:0xc8952f,shininess:60});
+  mats=[side,new THREE.MeshPhongMaterial({map:coinTex('h'),shininess:80,specular:0x777755}),new THREE.MeshPhongMaterial({map:coinTex('t'),shininess:80,specular:0x777777})];
+  buildScene(); resize(); bindPointer(); requestAnimationFrame(frame);
+}
+function disposeMesh(m){ scene.remove(m); if(m.geometry) m.geometry.dispose(); if(m.material) m.material.dispose(); }
+function buildScene(){
+  coins.forEach(c=>scene.remove(c.mesh)); coins=[];
+  if(trayMesh){disposeMesh(trayMesh); disposeMesh(binMesh);}
+  layout();
+  trayMesh=new THREE.Mesh(new THREE.BoxGeometry(L.Wt+2,.4,L.Ht+2),new THREE.MeshLambertMaterial({color:0xcdeee6})); trayMesh.position.set(L.xT,-.3,0); scene.add(trayMesh);
+  binMesh=new THREE.Mesh(new THREE.BoxGeometry(L.Wb+2,.4,L.Hb+2),new THREE.MeshLambertMaterial({color:0xffe1d3})); binMesh.position.set(L.xB,-.3,0); scene.add(binMesh);
+  for(let i=0;i<st.N0;i++){
+    const m=new THREE.Mesh(coinGeo,mats); const h=homePos(i);
+    m.position.set(h[0],.1,h[1]); m.scale.set(L.s,L.s,L.s); m.rotation.x=Math.PI; scene.add(m);
+    coins.push({mesh:m,alive:true,hx:h[0],hz:h[1]});
+  }
+  tx=L.cx; fitCam();
+}
+function fitCam(){
+  if(!webglOK) return; const t=Math.tan(20*Math.PI/180);
+  const total=L.Wt+L.Wb+9;
+  dist=Math.max(35,(total/2)*1.12/(t*camera.aspect),(Math.max(L.Ht,L.Hb)+6)/(2*t)*.9);
+}
+function resize(){
+  if(!webglOK) return; const w=stage.clientWidth,h=stage.clientHeight;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); fitCam(); drawAll();
+}
+const _v=new THREE.Vector3();
+function placeLabel(k,x,z){ _v.set(x,0,z).project(camera); const w=stage.clientWidth,h=stage.clientHeight; labs[k].style.left=(((_v.x+1)/2)*w)+'px'; labs[k].style.top=((1-_v.y)/2*h)+'px'; }
+let last=performance.now();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  az+=(azT-az)*.15; el+=(elT-el)*.15;
+  camera.position.set(tx+Math.sin(az)*Math.cos(el)*dist, Math.sin(el)*dist, Math.cos(az)*Math.cos(el)*dist);
+  camera.lookAt(tx,0,0);
+  stepAnim(dt);
+  placeLabel('tray',L.xT,-L.Ht/2-1.5); placeLabel('bin',L.xB,-L.Hb/2-1.5);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+function stepAnim(dt){
+  if(phase==='throw'){
+    pt+=dt; let all=true;
+    activeList.forEach(c=>{
+      const u=(pt-c.delay)/c.dur;
+      if(u<1) all=false;
+      if(u<=0) return;
+      const m=c.mesh;
+      if(u>=1){ m.position.set(c.hx,.1,c.hz); m.rotation.set(c.dead?0:Math.PI,0,0); return; }
+      const sn=Math.sin(Math.PI*u), e=1-(1-u)*(1-u);
+      m.position.set(c.hx+c.dx*sn,.1+c.h*4*u*(1-u),c.hz+c.dz*sn);
+      m.rotation.set(Math.PI+(c.endRot-Math.PI)*e,0,c.wz*sn);
+    });
+    if(all){ phase='pause'; pt=0; }
+  } else if(phase==='pause'){
+    pt+=dt;
+    if(pt>.6){
+      activeList.forEach(c=>{ if(c.dead){ c.bi=binCount++; const b=binPos(c.bi); c.bx=b[0]; c.bz=b[1]; } });
+      phase='collect'; pt=0;
+    }
+  } else if(phase==='collect'){
+    pt+=dt; const u=clamp(pt/.9,0,1), e=u*u*(3-2*u);
+    activeList.forEach(c=>{ if(!c.dead) return; const m=c.mesh;
+      m.position.set(c.hx+(c.bx-c.hx)*e,.1+4*Math.sin(Math.PI*u),c.hz+(c.bz-c.hz)*e);
+      const sc=L.s*(1-.28*e); m.scale.set(sc,sc,sc); });
+    if(u>=1){
+      activeList.forEach(c=>{ if(c.dead){ c.alive=false; c.mesh.position.set(c.bx,.1,c.bz); } });
+      finishThrow();
+    }
+  }
+}
+function startThrow(){
+  if(phase!=='idle'||finished) return;
+  activeList=coins.filter(c=>c.alive);
+  if(!activeList.length) return;
+  activeList.forEach(c=>{
+    c.dead=Math.random()<st.p; c.delay=Math.random()*.25; c.dur=.95+Math.random()*.3; c.h=5+Math.random()*4;
+    c.dx=(Math.random()-.5)*1.2; c.dz=(Math.random()-.5)*1.2; c.wz=(Math.random()-.5)*.8;
+    const k=2+Math.floor(Math.random()*2); c.endRot=c.dead?2*Math.PI*k:Math.PI+2*Math.PI*k;
+  });
+  if(!st.anim||!webglOK){ instantThrow(); return; }
+  phase='throw'; pt=0; updateButtons();
+}
+function instantThrow(){
+  activeList.forEach(c=>{ if(c.dead){ c.bi=binCount++; const b=binPos(c.bi); c.alive=false; const m=c.mesh; m.position.set(b[0],.1,b[1]); m.rotation.set(0,0,0); const sc=L.s*.72; m.scale.set(sc,sc,sc); } else { c.mesh.rotation.set(Math.PI,0,0); c.mesh.position.set(c.hx,.1,c.hz);} });
+  finishThrow();
+}
+function finishThrow(){
+  phase='idle';
+  const before=history[history.length-1];
+  N=coins.filter(c=>c.alive).length; throws++; history.push(N);
+  if(N===0){ finished=true; }
+  if(finished&&!saved) saveRun();
+  updateAll();
+  if(st.auto&&!finished) setTimeout(()=>{ if(st.auto) startThrow(); },st.anim?250:30);
+  else if(finished){ st.auto=false; }
+  updateButtons();
+}
+function resetExp(){
+  st.auto=false; phase='idle'; activeList=[]; binCount=0; throws=0; N=st.N0; history=[st.N0]; finished=false; saved=false;
+  if(webglOK) buildScene();
+  updateAll(); updateButtons();
+}
+function bindPointer(){
+  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY}; cv.style.cursor='grabbing'; try{cv.setPointerCapture(e.pointerId);}catch(_){} });
+  cv.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    azT=clamp(azT+dx*.006,-1.3,1.3); if(e.pointerType!=='touch') elT=clamp(elT+dy*.004,.15,1.5); });
+  const up=()=>{drag=null; cv.style.cursor='grab';}; cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+}
+document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.view; if(v==='top'){azT=0;elT=1.45;} else if(v==='angle'){azT=.5;elT=.8;} else {azT=0;elT=.3;}
+}));
+
+/* ---------- Басқару ---------- */
+function updateButtons(){
+  const busy=phase!=='idle';
+  $('bThrow').disabled=busy||finished; $('bFast').disabled=busy||finished;
+  $('bAuto').textContent=st.auto?'Тоқтату':'Автоматты ойнату'; $('bAuto').disabled=(finished)&&!st.auto;
+}
+$('s1').addEventListener('input',e=>{ st.N0=+e.target.value; stats=null; syncControls(); resetExp(); });
+$('s2').addEventListener('input',e=>{ st.p=+e.target.value; stats=null; syncControls(); resetExp(); });
+$('cAnim').addEventListener('change',e=>{ st.anim=e.target.checked; });
+$('bThrow').addEventListener('click',startThrow);
+$('bAuto').addEventListener('click',()=>{ if(st.auto){ st.auto=false; updateButtons(); return;} st.auto=true; updateButtons(); startThrow(); });
+$('bFast').addEventListener('click',()=>{
+  if(phase!=='idle'||finished) return; st.auto=false;
+  let g=0; while(!finished&&g++<300){ activeList=coins.filter(c=>c.alive); activeList.forEach(c=>{c.dead=Math.random()<st.p;}); 
+    activeList.forEach(c=>{ if(c.dead){ c.bi=binCount++; const b=binPos(c.bi); c.alive=false; const m=c.mesh; m.position.set(b[0],.1,b[1]); m.rotation.set(0,0,0); const sc=L.s*.72; m.scale.set(sc,sc,sc); } });
+    N=coins.filter(c=>c.alive).length; throws++; history.push(N); if(N===0) finished=true; }
+  if(!saved) saveRun(); updateAll(); updateButtons();
+});
+$('bReset').addEventListener('click',resetExp);
+$('bLog').addEventListener('click',()=>{ if(history.length<3){ toast('Алдымен бірнеше рет лақтырыңыз'); return; } saveRun(true); toast('Нәтиже журналға жазылды'); });
+function syncControls(){
+  $('s1').value=st.N0; $('s2').value=st.p; $('v1').textContent=st.N0; $('v2').textContent=fm(st.p,2);
+  $('theoNote').textContent='Теориялық жартылай ыдырау периоды: T = '+fm(Th(),2)+' лақтыру (λ = '+fm(lam(),3)+').';
+}
+
+/* ---------- Журнал ---------- */
+function saveRun(force){
+  if(saved&&!force) return; saved=true;
+  const f=fit(history);
+  journal.push({N0:st.N0,p:st.p,t:throws,seq:history.slice(0,8).join(', ')+(history.length>8?'…':''),T:f?f.T:null,Tt:Th()});
+  if(journal.length>40) journal.shift(); renderJ();
+}
+function renderJ(){
+  let t='<tr><th>№</th><th>N₀</th><th>p</th><th>Лақтыру саны</th><th>N тізбегі</th><th>T тәжірибе</th><th>T теория</th><th>Ауытқу</th></tr>';
+  if(!journal.length) t+='<tr><td colspan="8" style="color:var(--muted)">Әзірге жазба жоқ. Тәжірибені соңына дейін орындаңыз.</td></tr>';
+  journal.forEach((j,i)=>{ const d=j.T?((j.T-j.Tt)/j.Tt*100):null;
+    t+='<tr><td>'+(i+1)+'</td><td>'+j.N0+'</td><td>'+fm(j.p,2)+'</td><td>'+j.t+'</td><td style="white-space:normal">'+j.seq+'</td><td>'+(j.T?fm(j.T,2):'—')+'</td><td>'+fm(j.Tt,2)+'</td><td>'+(d!==null?(d>0?'+':'')+fm(d,1)+' %':'—')+'</td></tr>'; });
+  $('jTbl').innerHTML=t;
+  const vals=journal.filter(j=>j.T).map(j=>j.T);
+  $('jAvg').textContent=vals.length>1?('Орташа T = '+fm(vals.reduce((a,b)=>a+b,0)/vals.length,2)+' лақтыру ('+vals.length+' тәжірибе бойынша).'):'';
+}
+$('jDel').addEventListener('click',()=>{journal.pop(); renderJ();});
+$('jClear').addEventListener('click',()=>{journal.length=0; renderJ();});
+$('jCopy').addEventListener('click',()=>{
+  const txt=journal.map((j,i)=>[i+1,j.N0,fm(j.p,2),j.t,j.seq,j.T?fm(j.T,2):'—',fm(j.Tt,2)].join('\t')).join('\n');
+  try{ navigator.clipboard.writeText('№\tN0\tp\tt\tN тізбегі\tT тәж.\tT теор.\n'+txt).then(()=>toast('Кесте көшірілді'),()=>toast('Көшіру мүмкін болмады')); }catch(e){ toast('Көшіру мүмкін болмады'); }
+});
+
+/* ---------- Статистика ---------- */
+$('bStats').addEventListener('click',()=>{
+  const K=20, runs=[]; for(let k=0;k<K;k++) runs.push(simRun(st.N0,st.p));
+  const len=Math.max(...runs.map(r=>r.length)); const mean=[],sd=[];
+  for(let t=0;t<len;t++){ const v=runs.map(r=>t<r.length?r[t]:0); const m=v.reduce((a,b)=>a+b,0)/K; mean.push(m); sd.push(Math.sqrt(v.reduce((a,b)=>a+(b-m)*(b-m),0)/K)); }
+  const Ts=runs.map(r=>fit(r)).filter(Boolean).map(f=>f.T); const tm=Ts.reduce((a,b)=>a+b,0)/Ts.length;
+  const tsd=Math.sqrt(Ts.reduce((a,b)=>a+(b-tm)*(b-tm),0)/Ts.length);
+  stats={mean:mean,sd:sd,K:K,tm:tm,tsd:tsd};
+  $('statNote').innerHTML='<b>'+K+' тәжірибенің нәтижесі:</b> орташа T = '+fm(tm,2)+' ± '+fm(tsd,2)+' лақтыру. Теориялық T = '+fm(Th(),2)+'. Көк нүктелер — орташа N, сызықшалар — ауытқу аралығы.';
+  drawAll();
+});
+$('bStatsClr').addEventListener('click',()=>{ stats=null; $('statNote').textContent='Статистика тазаланды.'; drawAll(); });
+
+/* ---------- Жаңарту ---------- */
+function updateAll(){
+  const f=fit(history);
+  $('rT').textContent=throws; $('rN').textContent=N;
+  const prev=history.length>1?history[history.length-2]:null;
+  $('rFrac').textContent=prev?fm((prev-N)/prev*100,0)+' %':'—';
+  $('rTh').textContent=f?fm(f.T,2):'—';
+  $('badge').innerHTML='Лақтыру №<b>'+throws+'</b><br>Қалды: <b>'+N+'</b> · Ыдырады: <b>'+(st.N0-N)+'</b>';
+  const s=$('status');
+  if(finished){ s.className='status done'; s.textContent='Тәжірибе аяқталды: барлық ядро ыдырады. Нәтиже журналға жазылды.'; }
+  else if(!throws){ s.className='status'; s.textContent='Тәжірибе басталмады. «Лақтыру» батырмасын басыңыз.'; }
+  else { s.className='status'; s.textContent='Тәжірибе жүріп жатыр. Қалған тиындарды қайта лақтырыңыз.'; }
+  drawAll();
+}
+function setupCanvas(c,h){ const W=c.parentElement.clientWidth-40; const dpr=Math.min(window.devicePixelRatio||1,2); c.style.width=W+'px'; c.style.height=h+'px'; c.width=W*dpr; c.height=h*dpr; const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,h); return {x:x,W:W,H:h}; }
+function axes(x,W,H,o){
+  const pl=50,pr=14,pt=14,pb=40,pw=W-pl-pr,ph=H-pt-pb;
+  const X=v=>pl+(v-o.xmin)/(o.xmax-o.xmin)*pw, Y=v=>pt+ph-(v-o.ymin)/(o.ymax-o.ymin)*ph;
+  x.font='11.5px Nunito, sans-serif'; x.fillStyle='#587a7c'; x.strokeStyle='#e1f0ee'; x.lineWidth=1;
+  for(let i=0;i<=4;i++){ const v=o.ymin+(o.ymax-o.ymin)*i/4, py=Y(v); x.beginPath(); x.moveTo(pl,py); x.lineTo(W-pr,py); x.stroke(); x.textAlign='right'; x.textBaseline='middle'; x.fillText(o.yfmt(v),pl-6,py); }
+  const step=Math.max(1,Math.ceil((o.xmax-o.xmin)/8)); x.textAlign='center'; x.textBaseline='top';
+  for(let v=o.xmin;v<=o.xmax;v+=step){ const px=X(v); x.beginPath(); x.moveTo(px,pt); x.lineTo(px,pt+ph); x.stroke(); x.fillText(v,px,pt+ph+5); }
+  x.fillStyle='#0e4d49'; x.font='700 12px Nunito, sans-serif'; x.fillText(o.xl,pl+pw/2,H-16);
+  x.save(); x.translate(12,pt+ph/2); x.rotate(-Math.PI/2); x.textBaseline='middle'; x.fillText(o.yl,0,0); x.restore();
+  return {X:X,Y:Y,pl:pl,pr:pr,pt:pt,pw:pw,ph:ph};
+}
+function xmaxCalc(){ return Math.max(6,history.length-1,Math.min(60,Math.ceil(Th()*5.5))); }
+function drawChart1(){
+  const c=$('ch1'); if(c.parentElement.clientWidth<100) return;
+  const {x,W,H}=setupCanvas(c,c.parentElement.clientWidth<420?250:290); const xm=xmaxCalc();
+  const A=axes(x,W,H,{xmin:0,xmax:xm,ymin:0,ymax:st.N0,xl:'Лақтыру саны t (период)',yl:'Қалған ядро саны N',yfmt:v=>Math.round(v)});
+  x.setLineDash([5,4]); x.strokeStyle='#f2765f'; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(A.X(0),A.Y(st.N0/2)); x.lineTo(A.X(Th()),A.Y(st.N0/2)); x.lineTo(A.X(Th()),A.Y(0)); x.stroke(); x.setLineDash([]);
+  x.fillStyle='#c4503a'; x.font='700 11.5px Nunito, sans-serif'; x.textAlign='left'; x.textBaseline='bottom'; x.fillText('N₀/2',A.X(0)+6,A.Y(st.N0/2)-3);
+  x.strokeStyle='#139d92'; x.lineWidth=2.5; x.beginPath();
+  for(let t=0;t<=xm;t+=xm/200){ const px=A.X(t),py=A.Y(st.N0*Math.pow(1-st.p,t)); if(t===0)x.moveTo(px,py); else x.lineTo(px,py); } x.stroke();
+  if(stats){ stats.mean.forEach((m,t)=>{ if(t>xm) return; const sd=stats.sd[t];
+    x.strokeStyle='#5a9be6'; x.lineWidth=1.5; x.beginPath(); x.moveTo(A.X(t),A.Y(Math.max(0,m-sd))); x.lineTo(A.X(t),A.Y(Math.min(st.N0,m+sd))); x.stroke();
+    x.fillStyle='#3b82d6'; x.fillRect(A.X(t)-4,A.Y(m)-4,8,8); }); }
+  x.strokeStyle='#e0a026'; x.lineWidth=2; x.beginPath(); history.forEach((n,t)=>{ const px=A.X(t),py=A.Y(n); if(t===0)x.moveTo(px,py); else x.lineTo(px,py); }); x.stroke();
+  history.forEach((n,t)=>{ x.fillStyle='#f5b942'; x.strokeStyle='#fff'; x.lineWidth=2; x.beginPath(); x.arc(A.X(t),A.Y(n),5.5,0,7); x.fill(); x.stroke(); });
+  x.textBaseline='middle'; x.textAlign='left'; x.font='700 11.5px Nunito, sans-serif';
+  let lx=A.pl+8, ly=A.pt+10;
+  [['#139d92','Теория'],['#f5b942','Тәжірибе']].concat(stats?[['#3b82d6','Орташа ('+stats.K+')']]:[]).forEach(a=>{ x.fillStyle=a[0]; x.fillRect(lx,ly-5,14,10); x.fillStyle='#17383a'; x.fillText(a[1],lx+19,ly); lx+=x.measureText(a[1]).width+40; });
+}
+function drawChart2(){
+  const c=$('ch2'); if(c.parentElement.clientWidth<100) return;
+  const {x,W,H}=setupCanvas(c,c.parentElement.clientWidth<420?250:290); const xm=xmaxCalc(); const ym=Math.log(st.N0);
+  const A=axes(x,W,H,{xmin:0,xmax:xm,ymin:0,ymax:ym*1.05,xl:'Лақтыру саны t (период)',yl:'ln N',yfmt:v=>fm(v,1)});
+  x.save(); x.beginPath(); x.rect(A.pl,A.pt,A.pw,A.ph); x.clip();
+  x.strokeStyle='#139d92'; x.lineWidth=2.5; x.beginPath(); x.moveTo(A.X(0),A.Y(ym)); x.lineTo(A.X(xm),A.Y(ym-lam()*xm)); x.stroke();
+  const f=fit(history);
+  if(f){ x.setLineDash([6,4]); x.strokeStyle='#c4503a'; x.lineWidth=2; x.beginPath(); x.moveTo(A.X(0),A.Y(f.a)); x.lineTo(A.X(xm),A.Y(f.a-f.lam*xm)); x.stroke(); x.setLineDash([]); }
+  history.forEach((n,t)=>{ if(n<=0) return; x.fillStyle='#f5b942'; x.strokeStyle='#fff'; x.lineWidth=2; x.beginPath(); x.arc(A.X(t),A.Y(Math.log(n)),5.5,0,7); x.fill(); x.stroke(); });
+  x.restore();
+  x.textBaseline='middle'; x.textAlign='left'; x.font='700 11.5px Nunito, sans-serif'; let lx=A.pl+8, ly=A.pt+10;
+  [['#139d92','Теория'],['#c4503a','Тәжірибелік түзу'],['#f5b942','Нүктелер']].forEach(a=>{ x.fillStyle=a[0]; x.fillRect(lx,ly-5,14,10); x.fillStyle='#17383a'; x.fillText(a[1],lx+19,ly); lx+=x.measureText(a[1]).width+40; });
+}
+function drawTable(){
+  let t='<tr><th>t</th><th>N тәжірибе</th><th>N теория</th><th>Ыдыраған ΔN</th><th>Үлесі ΔN / N</th></tr>';
+  history.forEach((n,i)=>{ const th=st.N0*Math.pow(1-st.p,i); const d=i?history[i-1]-n:null;
+    t+='<tr><td>'+i+'</td><td>'+n+'</td><td>'+fm(th,1)+'</td><td>'+(d!==null?d:'—')+'</td><td>'+(d!==null&&history[i-1]>0?fm(d/history[i-1],2):'—')+'</td></tr>'; });
+  $('tbl').innerHTML=t;
+  let sumD=0,sumP=0; for(let i=1;i<history.length;i++){ sumD+=history[i-1]-history[i]; sumP+=history[i-1]; }
+  const f=fit(history); let h='';
+  if(sumP>0) h+='<li>Бір лақтыруда ыдыраған орташа үлес: '+fm(sumD/sumP,2)+' (теория бойынша p = '+fm(st.p,2)+').</li>';
+  if(f) h+='<li>Тәжірибелік жартылай ыдырау периоды T = '+fm(f.T,2)+' лақтыру, теориялық T = '+fm(Th(),2)+'. Ыдырау тұрақтысы λ = '+fm(f.lam,3)+'.</li>';
+  const half=history.findIndex(n=>n<=st.N0/2); if(half>0) h+='<li>Ядролардың жартысы '+half+'-лақтырудан кейін ыдырады.</li>';
+  $('summary').innerHTML=h;
+}
+function drawAll(){ drawChart1(); drawChart2(); drawTable(); }
+
+/* ---------- Тест ---------- */
+const QS=[
+ {q:'100 тиынды бір рет лақтырғаннан кейін шамамен қанша тиын (ядро) ыдырамай қалады?',o:['Шамамен 25','Шамамен 50','Шамамен 90'],a:1,e:'p = 0,5 болғандықтан, жартысы ыдырайды.'},
+ {q:'Жартылай ыдырау периоды дегеніміз не?',o:['Барлық ядро ыдырайтын уақыт','Ядролардың жартысы ыдырайтын уақыт','Бір ядро ыдырайтын уақыт'],a:1,e:'Дәл осы уақыт T әрпімен белгіленеді.'},
+ {q:'Осы модельде бір лақтыру неге сәйкес келеді?',o:['Бір жартылай ыдырау периодына','Бір ядроның массасына','Радиацияның қуатына'],a:0,e:'p = 0,5 болғанда бір лақтыруда ядролардың жартысы ыдырайды.'},
+ {q:'100 тиынмен 3 лақтырудан кейін шамамен қанша тиын қалады?',o:['Шамамен 12','Шамамен 30','Шамамен 3'],a:0,e:'100 → 50 → 25 → 12,5.'},
+ {q:'Неге тәжірибелік нәтиже теориядан аздап өзгеше болады?',o:['Тиындар жеткіліксіз тегіс','Ыдырау кездейсоқ статистикалық құбылыс','Теория дұрыс емес'],a:1,e:'Тиын саны көп болған сайын нәтиже теорияға жақындайды.'},
+ {q:'Ыдырау ықтималдығы p = 0,5-тен кіші болса, жартылай ыдырау периоды қалай өзгереді?',o:['Артады','Кемиді','Өзгермейді'],a:0,e:'Ыдырау баяулайды, сондықтан жартысы ыдырауға ұзағырақ уақыт кетеді.'}
+];
+let qs=0;
+function renderQuiz(){
+  qs=0; $('score').textContent='Нәтиже: 0 / '+QS.length;
+  $('quiz').innerHTML=QS.map((q,i)=>'<div class="q" data-i="'+i+'"><p>'+(i+1)+'. '+q.q+'</p><div class="opts">'+q.o.map((t,k)=>'<button class="opt" data-k="'+k+'">'+t+'</button>').join('')+'</div><div class="exp">'+q.e+'</div></div>').join('');
+}
+$('quiz').addEventListener('click',e=>{
+  const b=e.target.closest('.opt'); if(!b) return; const box=b.closest('.q'); if(box.dataset.done) return;
+  const i=+box.dataset.i,k=+b.dataset.k; box.dataset.done=1;
+  box.querySelectorAll('.opt')[QS[i].a].classList.add('ok');
+  if(k===QS[i].a) qs++; else b.classList.add('bad');
+  box.querySelector('.exp').style.display='block'; $('score').textContent='Нәтиже: '+qs+' / '+QS.length;
+});
+$('qReset').addEventListener('click',renderQuiz);
+
+/* ---------- Сілтемелер ---------- */
+let tt;
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+document.querySelectorAll('.linkbtn').forEach(b=>b.addEventListener('click',()=>{
+  const id=b.dataset.id, url=location.href.split('#')[0]+'#'+id;
+  try{ navigator.clipboard.writeText(url).then(()=>toast('Сілтеме көшірілді'),()=>{location.hash=id; toast('Сілтеме мекенжай жолағында');}); }
+  catch(e){ location.hash=id; toast('Сілтеме мекенжай жолағында'); }
+}));
+
+/* ---------- Іске қосу ---------- */
+renderQuiz(); renderJ(); syncControls();
+N=st.N0; history=[N];
+init3D();
+updateAll(); updateButtons();
+window.addEventListener('resize',resize);
+if(window.ResizeObserver && webglOK) new ResizeObserver(resize).observe(stage);
+})();
+</script>
+</body>
+</html>
