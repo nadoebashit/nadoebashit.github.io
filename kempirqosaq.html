@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кемпірқосақ зертханасы — күн жарығын спектрге ыдырату</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6fbff; --card:#ffffff; --ink:#1a3350; --muted:#5f7a92; --line:#dbe9f3;
+  --acc:#2f8fe0; --acc-d:#1b66b0; --acc-l:#e4f1fd; --sun:#ffd166;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0; background:linear-gradient(180deg,#f6fbff 0%,#fff9ee 100%); background-color:#f6fbff; color:var(--ink);
+  font-family:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; line-height:1.6; font-size:16px}
+a{color:var(--acc-d)}
+.wrap{max-width:1080px; margin:0 auto; padding:0 16px}
+
+nav.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:rgba(246,251,255,.93); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:10px; padding-bottom:10px; scrollbar-width:none}
+nav.top a{flex:none; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px; padding:7px 14px; border-radius:999px; background:#fff; border:1px solid var(--line)}
+nav.top a:hover,nav.top a:focus-visible{background:var(--acc-l); border-color:var(--acc); outline:none}
+
+header.hero{position:relative; overflow:hidden; padding:44px 0 80px}
+.hero h1{font-size:clamp(34px,7vw,62px); line-height:1.06; margin:14px 0 14px; font-weight:900; letter-spacing:-.02em; color:#17406e; max-width:640px}
+.hero p.lead{font-size:clamp(16px,2.4vw,20px); max-width:600px; color:var(--muted); margin:0 0 22px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:#fff; border:1px solid var(--line); padding:5px 12px; border-radius:999px; font-size:13px; font-weight:700; color:var(--acc-d)}
+.btn{display:inline-block; border:0; cursor:pointer; font:inherit; font-weight:800; padding:11px 20px; border-radius:14px; background:var(--acc); color:#fff; text-decoration:none; box-shadow:0 6px 16px rgba(47,143,224,.28); transition:transform .15s, background .15s}
+.btn:hover{background:var(--acc-d); transform:translateY(-1px)}
+.btn.alt{background:#fff; color:var(--acc-d); border:1.5px solid var(--acc); box-shadow:none}
+.btn.alt:hover{background:var(--acc-l)}
+.btn.sm{padding:7px 13px; font-size:14px; border-radius:12px; box-shadow:none}
+.btn:focus-visible,.seg button:focus-visible,.opt:focus-visible{outline:3px solid #ffb74d; outline-offset:2px}
+.btns{display:flex; flex-wrap:wrap; gap:8px}
+.rainbow{position:absolute; right:-40px; top:6px; width:min(52vw,520px); opacity:.95}
+@media (max-width:760px){.rainbow{width:110vw; right:-30vw; top:-10px; opacity:.45}}
+
+section{padding:44px 0 6px}
+.sh{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:6px}
+.sh h2{margin:0; font-size:clamp(24px,4vw,34px); font-weight:900; color:#17406e}
+.sh h2 a{color:inherit; text-decoration:none}
+.sh h2 a:hover{text-decoration:underline}
+.linkbtn{font:inherit; font-size:13px; font-weight:700; background:#fff; border:1px dashed var(--acc); color:var(--acc-d); border-radius:999px; padding:4px 12px; cursor:pointer}
+.linkbtn:hover{background:var(--acc-l)}
+.sub{color:var(--muted); margin:0 0 18px; max-width:760px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:20px; box-shadow:0 10px 28px rgba(26,51,80,.06)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.task{background:linear-gradient(135deg,#fff 0%,#fff3d6 100%); border-left:6px solid var(--sun); font-size:17px}
+.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.steps li{counter-increment:s; position:relative; padding:12px 14px 12px 56px; background:#fff; border:1px solid var(--line); border-radius:16px}
+.steps li::before{content:counter(s); position:absolute; left:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--acc-l); color:var(--acc-d); font-weight:900; display:grid; place-items:center}
+.formula{font-size:clamp(17px,3vw,22px); font-weight:800; background:var(--acc-l); border-radius:14px; padding:12px 14px; margin:10px 0; overflow-x:auto; white-space:nowrap}
+.note{font-size:13.5px; color:var(--muted)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+th{background:#edf5fd; color:#17406e}
+.dot{display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle}
+.ul{margin:0; padding-left:20px}
+.ul li{margin:6px 0}
+.band{display:flex; height:22px; border-radius:11px; overflow:hidden; margin:10px 0 4px}
+.band i{flex:1}
+
+.lab{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:16px; align-items:start}
+@media (max-width:900px){.lab{grid-template-columns:1fr}}
+.stage{position:relative; border-radius:22px; overflow:hidden; border:1px solid var(--line); height:440px;
+  background:linear-gradient(180deg,#e9f5ff 0%,#fdf7e8 100%); background-color:#e9f5ff}
+@media (max-width:600px){.stage{height:380px}}
+#c3d{width:100%; height:100%; display:block; touch-action:pan-y; cursor:grab}
+#labels{position:absolute; inset:0; pointer-events:none}
+.vl{position:absolute; transform:translate(-50%,-50%); font-size:12px; font-weight:800; background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:8px; padding:2px 7px; color:var(--ink); white-space:nowrap}
+.views{position:absolute; right:10px; top:10px; display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+.views button{font:inherit; font-size:12px; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.93); border-radius:10px; padding:5px 9px; cursor:pointer; color:var(--ink)}
+.views button:hover{background:var(--acc-l)}
+.hint{position:absolute; left:10px; bottom:8px; right:10px; font-size:12px; color:var(--muted); font-weight:700; pointer-events:none}
+.ctl{display:grid; gap:14px}
+.ctl h3{margin:0 0 6px; font-size:15px; color:#17406e}
+.seg{display:flex; gap:6px; flex-wrap:wrap}
+.seg button{flex:1; min-width:84px; font:inherit; font-weight:800; font-size:14px; border:1.5px solid var(--line); background:#fff; border-radius:12px; padding:9px 8px; cursor:pointer; color:var(--ink)}
+.seg button.on{background:var(--acc); border-color:var(--acc); color:#fff}
+input[type=range]{width:100%; accent-color:var(--acc); height:28px}
+.row{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-weight:700; font-size:14.5px}
+.row b{color:var(--acc-d); font-size:18px; white-space:nowrap}
+.chk{display:flex; gap:8px; align-items:center; font-weight:700; font-size:14.5px}
+.chk input{width:20px; height:20px; accent-color:var(--acc)}
+.status{border-radius:14px; padding:10px 12px; font-weight:700; font-size:14.5px; background:#e5f8ec; border:1px solid #9fdcb6; color:#14663a}
+.status.warn{background:#fff3dc; border-color:#ffd58a; color:#8a5a00}
+.order{background:#f1f8ff; border:1px solid var(--line); border-radius:14px; padding:10px 12px; font-size:14.5px}
+.order .seq{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
+.pill{display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-weight:800; font-size:13px}
+
+canvas.plot{width:100%; display:block; background:#fff; border:1px solid var(--line); border-radius:18px}
+.sumlist{margin:10px 0 0; padding-left:20px}
+.form{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; align-items:end}
+@media (max-width:760px){.form{grid-template-columns:1fr 1fr}}
+.form label{font-size:12.5px; font-weight:800; color:var(--muted); display:block}
+.form input,.form select{width:100%; font:inherit; padding:9px 10px; border:1.5px solid var(--line); border-radius:12px; background:#fff; color:var(--ink)}
+.q{margin-bottom:14px}
+.q p{font-weight:800; margin:0 0 8px}
+.opts{display:grid; gap:8px}
+.opt{font:inherit; text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:10px 14px; cursor:pointer; color:var(--ink); font-weight:600}
+.opt:hover{background:var(--acc-l)}
+.opt.ok{background:#d9f6e7; border-color:#43c585}
+.opt.bad{background:#ffe3e8; border-color:#ff8aa1}
+.exp{font-size:14px; color:var(--muted); margin-top:6px; display:none}
+.score{font-size:20px; font-weight:900; color:var(--acc-d)}
+footer{margin-top:50px; padding:26px 0 40px; background:#e3f0fb; color:var(--muted); font-size:14px}
+#toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%) translateY(30px); background:#17406e; color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; opacity:0; transition:.25s; z-index:99; pointer-events:none}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Бөлімдер">
+  <div class="wrap">
+    <a href="#intro">Кіріспе</a>
+    <a href="#theory">Теория</a>
+    <a href="#lab">3D зертхана</a>
+    <a href="#analysis">Талдау</a>
+    <a href="#journal">Журнал</a>
+    <a href="#test">Тест</a>
+    <a href="#conclusion">Қорытынды</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="chips"><span class="chip">Шығармашы��ық тапсырма · 184-бет</span><span class="chip">3D виртуалды зертхана</span><span class="chip">Жарық · Оптика</span></div>
+    <h1>Күн жарығынан кемпірқосақ алайық</h1>
+    <p class="lead">Су құйылған шыны ыдыс пен айнаның көмегімен ақ жарықты спектрге ыдыратып, түстердің орналасу ретін зерттейміз.</p>
+    <div class="btns"><a class="btn" href="#lab">Зертханаға өту</a><a class="btn alt" href="#theory">Теорияны оқу</a></div>
+  </div>
+  <svg class="rainbow" viewBox="0 0 520 280" aria-hidden="true">
+    <g fill="none" stroke-width="22" stroke-linecap="round">
+      <path d="M30 270 A230 230 0 0 1 490 270" stroke="#e53935"/>
+      <path d="M52 270 A208 208 0 0 1 468 270" stroke="#fb8c00"/>
+      <path d="M74 270 A186 186 0 0 1 446 270" stroke="#f9c900"/>
+      <path d="M96 270 A164 164 0 0 1 424 270" stroke="#43a047"/>
+      <path d="M118 270 A142 142 0 0 1 402 270" stroke="#26c6da"/>
+      <path d="M140 270 A120 120 0 0 1 380 270" stroke="#2457d6"/>
+      <path d="M162 270 A98 98 0 0 1 358 270" stroke="#8e24aa"/>
+    </g>
+  </svg>
+</header>
+
+<main class="wrap">
+
+<section id="intro">
+  <div class="sh"><h2><a href="#intro">Кіріспе: тапсырма</a></h2><button class="linkbtn" data-id="intro">Сілтемені көшіру</button></div>
+  <p class="sub">Бұл бөлімде тапсырма шарты, мақсаты және нақты тәжірибенің барысы берілген.</p>
+  <div class="card task">
+    <b>Шығармашылық тапсырма (184-бет):</b> шыны ыдыстағы су мен айнаны пайдаланып, күн жарығын спектрге ыдырату (кемпірқосақ алу) тәжірибесін жасаңыз және түстердің орналасу ретін зерттеңіз.
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3 style="margin-top:0">Мақсаты мен міндеттері</h3>
+      <ul class="ul">
+        <li>Ақ жарықтың күрделі құрамын көзбен көру.</li>
+        <li>Дисперсия құбылысын түсіну.</li>
+        <li>Спектрдегі түстердің орналасу ретін анықтау.</li>
+        <li>Айнаның көлбеулігі мен экран қашықтығының әсерін зерттеу.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Нақты тәжірибенің барысы</h3>
+      <ol class="steps">
+        <li>Мөлдір шыны ыдысқа су құйыңыз.</li>
+        <li>Суға кішкентай айнаны көлбеу қойыңыз.</li>
+        <li>Айнаға күн сәулесін немесе қол шамының жіңішке сәулесін түсіріңіз.</li>
+        <li>Айнаның көлбеулігін өзгертіп, қабырғадан немесе ақ қағаздан спектрді іздеңіз.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="theory">
+  <div class="sh"><h2><a href="#theory">Теориялық негіз</a></h2><button class="linkbtn" data-id="theory">Сілтемені көшіру</button></div>
+  <p class="sub">Спектр екі құбылыстың арқасында пайда болады: жарықтың сынуы және дисперсия.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">1. Жарықтың сынуы</h3>
+      <p>Жарық ауадан суға өткенде бағытын өзгертеді. Бұл құбылыс сыну заңымен сипатталады.</p>
+      <div class="formula">sin θ₁ = n · sin θ₂</div>
+      <p class="note">θ₁ — түсу бұрышы, θ₂ — сыну бұрышы, n — судың сыну көрсеткіші (≈ 1,33).</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">2. Дисперсия</h3>
+      <p>Ақ жарық әртүрлі толқын ұзындықты сәулелердің қоспасы. Заттың сыну көрсеткіші толқын ұзындығына байланысты: қысқа толқынды (күлгін) сәуле көбірек, ұзын толқынды (қызыл) сәуле азырақ сынады.</p>
+      <div class="formula">n(λ) = A + B / λ²</div>
+      <p class="note">Коши формуласы. Су үшін A ≈ 1,3242 және B ≈ 3046 нм² деп алынды.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">3. Неге айна көлбеу болуы керек?</h3>
+      <p>Айна көлбеу болмаса (φ = 0), су бетіне кіру және шығу кезіндегі дисперсия бірін-бірі теңестіреді. Барлық түстер параллель шығады, спектр көрінбейді. Айна көлбеу болғанда сәуле су бетіне басқа бұрышпен келеді, түстер әртүрлі бұрышпен шығып, ажырайды.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">4. Тотальды ішкі шағылу</h3>
+      <p>Сәуле судан ауаға шыққанда түсу бұрышы шектік бұрыштан үлкен болса, жарық судан шықпай, қайта шағылады.</p>
+      <div class="formula">sin θ<sub>шек</sub> = 1 / n</div>
+      <p class="note">Су үшін θ<sub>шек</sub> ≈ 48,6°. Сыну көрсеткіші үлкен түс (күлгін) бұрын шағылады.</p>
+    </div>
+  </div>
+  <div class="card scroll" style="margin-top:16px">
+    <h3 style="margin-top:0">Спектрдегі жеті түс</h3>
+    <div class="band" aria-hidden="true"><i style="background:#e53935"></i><i style="background:#fb8c00"></i><i style="background:#f9c900"></i><i style="background:#43a047"></i><i style="background:#26c6da"></i><i style="background:#2457d6"></i><i style="background:#8e24aa"></i></div>
+    <table id="colTbl"></table>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sh"><h2><a href="#lab">3D виртуалды зертхана</a></h2><button class="linkbtn" data-id="lab">Сілтемені көшіру</button></div>
+  <p class="sub">Күн сәулесі су бетінен өтіп, айнадан шағылады да, қайта судан шығып, оң жақтағы экранға түседі. Жылжытқыштарды өзгертіп, спектрдің қалай өзгеретінін бақылаңыз.</p>
+  <div class="lab">
+    <div class="stage" id="stage">
+      <canvas id="c3d" aria-label="Тәжірибенің 3D көрінісі"></canvas>
+      <div id="labels"></div>
+      <div class="views">
+        <button data-view="front">Алдынан</button>
+        <button data-view="angle">Бұрыштан</button>
+        <button data-view="top">Жоғарыдан</button>
+      </div>
+      <div class="hint">Сахнаны сүйреп айналдырыңыз</div>
+    </div>
+
+    <div class="card ctl">
+      <div>
+        <h3>Дайын тәжірибелер</h3>
+        <div class="btns">
+          <button class="btn sm" data-pre="main">Негізгі</button>
+          <button class="btn sm alt" data-pre="flat">Көлбеусіз айна</button>
+          <button class="btn sm alt" data-pre="wide">Кең спектр</button>
+          <button class="btn sm alt" data-pre="tir">Тотальды шағылу</button>
+        </div>
+      </div>
+      <div>
+        <h3>Сұйықтық</h3>
+        <div class="seg" id="segLiq">
+          <button data-liq="water" class="on">Су</button>
+          <button data-liq="brine">Тұзды су</button>
+          <button data-liq="glyc">Глицерин</button>
+        </div>
+      </div>
+      <div>
+        <div class="row"><span>Күн сәулесінің түсу бұрышы θ₁</span><b id="v1"></b></div>
+        <input type="range" id="s1" min="20" max="70" step="1" aria-label="Түсу бұрышы">
+      </div>
+      <div>
+        <div class="row"><span>Айнаның көлбеулігі φ</span><b id="v2"></b></div>
+        <input type="range" id="s2" min="-12" max="6" step="0.5" aria-label="Айна көлбеулігі">
+      </div>
+      <div>
+        <div class="row"><span>Экранға дейінгі қашықтық</span><b id="v3"></b></div>
+        <input type="range" id="s3" min="25" max="70" step="1" aria-label="Экран қашықтығы">
+      </div>
+      <div>
+        <div class="row"><span>Дисперсияны үлкейту</span><b id="v4"></b></div>
+        <input type="range" id="s4" min="1" max="10" step="0.5" aria-label="Үлкейту">
+        <div class="note">Нақты дисперсия өте аз, сондықтан оқу мақсатымен үлкейтуге болады. ×1 — нақты мән.</div>
+      </div>
+      <label class="chk"><input type="checkbox" id="cCont" checked> Үздіксіз спектрді көрсету</label>
+      <label class="chk"><input type="checkbox" id="cBeam" checked> Сәулелерді көрсету</label>
+      <div class="status" id="status"></div>
+      <div class="order" id="order"></div>
+      <button class="btn sm" id="bLog">Өлшемді журналға жазу</button>
+    </div>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="sh"><h2><a href="#analysis">Талдау: сәуле жолы, график, кесте</a></h2><button class="linkbtn" data-id="analysis">Сілтемені көшіру</button></div>
+  <p class="sub">Төмендегі сызба мен графиктер зертханадағы қазіргі параметрлер бойынша бірден жаңарады.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Сәуле жолының 2D сызбасы</h3>
+    <canvas class="plot" id="diag"></canvas>
+    <p class="note" style="margin-bottom:0">Үзік сызықтар — су бетіне жүргізілген нормаль. Түсті сәулелер — жеті түстің жолы.</p>
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><h3 style="margin-top:0">Сыну көрсеткішінің толқын ұзындығына тәуелділігі</h3><canvas class="plot" id="ch1"></canvas></div>
+    <div class="card"><h3 style="margin-top:0">Түстің экрандағы орны</h3><canvas class="plot" id="ch2"></canvas></div>
+  </div>
+  <div class="card scroll" style="margin-top:16px">
+    <h3 style="margin-top:0">Есептеу кестесі</h3>
+    <table id="tbl"></table>
+    <ul class="sumlist" id="summary"></ul>
+  </div>
+</section>
+
+<section id="journal">
+  <div class="sh"><h2><a href="#journal">Тәжірибе журналы</a></h2><button class="linkbtn" data-id="journal">Сілтемені көшіру</button></div>
+  <p class="sub">Зертханадағы «Өлшемді журналға жазу» батырмасы қазіргі нәтижені кестеге қосады. Нақты тәжірибенің өз бақылауыңызды да жазуға болады.</p>
+  <div class="card">
+    <div class="btns" style="margin-bottom:12px">
+      <button class="btn sm" id="jAdd">Қазіргі нәтижені жазу</button>
+      <button class="btn sm alt" id="jDel">Соңғы жолды өшіру</button>
+      <button class="btn sm alt" id="jClear">Тазалау</button>
+      <button class="btn sm alt" id="jCopy">Кестені көшіру</button>
+    </div>
+    <div class="scroll"><table id="jTbl"></table></div>
+    <h3>Нақты тәжірибедегі бақылауым</h3>
+    <div class="form">
+      <div><label for="oA">Түсу бұрышы шамамен, °</label><input id="oA" type="number" min="0" max="90" placeholder="45"></div>
+      <div><label for="oD">Экранға дейін, см</label><input id="oD" type="number" min="0" placeholder="50"></div>
+      <div style="grid-column:span 2"><label for="oR">Түстер реті (жоғарыдан төмен)</label><input id="oR" type="text" placeholder="қызыл, сары, жасыл, көк, күлгін"></div>
+    </div>
+    <div class="btns" style="margin-top:10px"><button class="btn sm" id="oAdd">Бақылауды қосу</button></div>
+  </div>
+</section>
+
+<section id="test">
+  <div class="sh"><h2><a href="#test">Білімді тексер</a></h2><button class="linkbtn" data-id="test">Сілтемені көшіру</button></div>
+  <p class="sub">Бес сұраққа жауап беріңіз. Дұрыс жауап жасыл түспен көрсетіледі.</p>
+  <div class="card">
+    <div id="quiz"></div>
+    <div class="btns" style="align-items:center"><span class="score" id="score"></span><button class="btn sm alt" id="qReset">Қайта бастау</button></div>
+  </div>
+</section>
+
+<section id="conclusion">
+  <div class="sh"><h2><a href="#conclusion">Қорытынды</a></h2><button class="linkbtn" data-id="conclusion">Сілтемені көшіру</button></div>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Негізгі тұжырымдар</h3>
+      <ul class="ul">
+        <li>Ақ жарық су мен көлбеу айнаның көмегімен жеті түске ыдырайды.</li>
+        <li>Күлгін түстің сыну көрсеткіші ең үлкен, қызылдікі ең кіші. Сондықтан күлгін сәуле ең көп ауытқиды.</li>
+        <li>Спектрдің бір шетінде қызыл, екінші шетінде күлгін орналасады. Түстер реті қызыл, қызғылт сары, сары, жасыл, көгілдір, көк, күлгін болып өзгермейді.</li>
+        <li>Айна көлбеу болмаса спектр көрінбейді. Көлбеулік артып, шығу бұрышы үлкейген сайын спектр кеңейеді.</li>
+        <li>Экран алыс болған сайын түстер арасындағы қашықтық артады.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Нақты тәжірибе үшін кеңес</h3>
+      <ul class="ul">
+        <li>Бөлмені қараңғылаңыз, күн сәулесін терезенің жіңішке саңылауынан өткізіңіз.</li>
+        <li>Айнаны суға көлбеу қойып, көлбеулікті баяу өзгертіңіз.</li>
+        <li>Спектрді ақ қағаздан немесе ақ қабырғадан іздеңіз.</li>
+        <li>Қағазды алыстата түссеңіз, түстер айқынырақ ажырайды.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Бұл оқу симуляторы сәуле оптикасының сыну заңы мен Коши формуласына негізделген жеңілдетілген модель. Нақты тәжірибеде нәтиже ыдыс пен айнаның өлшемдеріне байланысты болады.</div>
+</footer>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const rad=d=>d*Math.PI/180, deg=r=>r*180/Math.PI;
+const fm=(x,d)=>x.toFixed(d).replace('.',',');
+
+/* ---------- Деректер ---------- */
+const COLORS=[
+ {k:'Қызыл',l:700,c:'#e53935'},{k:'Қызғылт сары',l:620,c:'#fb8c00'},{k:'Сары',l:580,c:'#f2bf00'},
+ {k:'Жасыл',l:550,c:'#43a047'},{k:'Көгілдір',l:490,c:'#26c6da'},{k:'Көк',l:450,c:'#2457d6'},{k:'Күлгін',l:400,c:'#8e24aa'}
+];
+const LIQ={water:{name:'Су',A:1.3242,B:3046},brine:{name:'Тұзды су',A:1.3392,B:3100},glyc:{name:'Глицерин',A:1.4572,B:5600}};
+const st={liq:'water',th1:45,phi:-7,D:55,ex:4,cont:true,beams:true};
+const MD=6, ML=8, RW=6.85, WY0=-10, WY1=40;
+
+function nTrue(l){const L=LIQ[st.liq]; return L.A+L.B/(l*l);}
+function nOf(l){const nm=nTrue(589); return nm+st.ex*(nTrue(l)-nm);}
+
+let X0=0;
+function trace(l){
+  const n=nOf(l), t1=rad(st.th1), t2=Math.asin(Math.sin(t1)/n);
+  const o={l:l,n:n,t2:deg(t2),status:'ok',pts:[]};
+  const P0=[X0,0], d=[Math.sin(t2),-Math.cos(t2)];
+  const ph=rad(st.phi), t=[Math.cos(ph),Math.sin(ph)], N=[-Math.sin(ph),Math.cos(ph)], M=[0,-MD];
+  o.pts=[P0];
+  const dn=d[0]*N[0]+d[1]*N[1];
+  const s=((M[0]-P0[0])*N[0]+(M[1]-P0[1])*N[1])/dn;
+  const Pm=[P0[0]+s*d[0],P0[1]+s*d[1]];
+  const along=(Pm[0]-M[0])*t[0]+(Pm[1]-M[1])*t[1];
+  if(!(s>0)||Math.abs(along)>ML/2){ o.status='miss'; const k=(-9.6-P0[1])/d[1]; o.pts.push([P0[0]+k*d[0],-9.6]); return o; }
+  o.pts.push(Pm);
+  const r=[d[0]-2*dn*N[0], d[1]-2*dn*N[1]];
+  if(r[1]<=0.02){ o.status='miss'; const k=(-9.6-Pm[1])/(r[1]<-0.02?r[1]:-0.02); o.pts.push([Pm[0]+k*r[0],-9.6]); return o; }
+  const k2=-Pm[1]/r[1], Pe=[Pm[0]+k2*r[0],0];
+  o.pts.push(Pe); o.t3=deg(Math.asin(Math.min(1,Math.abs(r[0]))));
+  const s4=n*Math.abs(r[0]);
+  if(s4>=1){ o.status='tir'; o.pts.push([Pe[0]+r[0]*8, Math.max(-9.6,-r[1]*8)]); return o; }
+  const t4=Math.asin(s4); o.t4=deg(t4);
+  const dir=[Math.sign(r[0]||1)*s4, Math.cos(t4)]; o.dir=dir;
+  if(dir[0]<=0.02){ o.status='noscreen'; o.pts.push([Pe[0]+dir[0]*60,dir[1]*60]); return o; }
+  const yw=(st.D-Pe[0])*dir[1]/dir[0]; o.y=yw;
+  o.pts.push([st.D,yw]);
+  if(yw>WY1||yw<WY0) o.status='offscreen';
+  return o;
+}
+
+/* ---------- Есептеу ---------- */
+let R=[], RC=[], info={};
+function recompute(){
+  const n589=nTrue(589), t2=Math.asin(Math.sin(rad(st.th1))/n589);
+  X0=-MD*Math.tan(t2);
+  R=COLORS.map(c=>trace(c.l));
+  RC=[]; for(let l=400;l<=700;l+=10) RC.push(trace(l));
+  const msgs=[]; let ok=true;
+  const cnt=k=>R.filter(r=>r.status===k).length;
+  if(Math.abs(X0)>RW){ msgs.push('Күн сәулесі ыдыстың қабырғасына түсті. θ₁ бұрышын кішірейтіңіз.'); ok=false; }
+  else if(cnt('miss')===7){ msgs.push('Сәуле айнаға түспеді немесе төмен кетті. φ бұрышын өзгертіңіз.'); ok=false; }
+  else if(cnt('tir')===7){ msgs.push('Тотальды ішкі шағылу: сәуле судан шыға алмады. φ бұрышын кемітіңіз.'); ok=false; }
+  else if(cnt('noscreen')+cnt('miss')===7||R.every(r=>r.status==='noscreen'||r.status==='miss'||r.status==='tir')){ msgs.push('Сәуле экранға бағытталмаған. Айнаның көлбеулігін өзгертіңіз.'); ok=false; }
+  else {
+    if(cnt('tir')>0){ const names=R.filter(r=>r.status==='tir').map(r=>COLORS[R.indexOf(r)].k.toLowerCase()); msgs.push('Тотальды шағылуға ұшыраған түстер: '+names.join(', ')+'.'); ok=false; }
+    if(cnt('offscreen')>0){ msgs.push('Спектр экраннан тыс түсті. Экранды жақындатыңыз немесе φ бұрышын өзгертіңіз.'); ok=false; }
+    const ex=R.find(r=>r.pts[2]&&Math.abs(r.pts[2][0])>RW); if(ex){ msgs.push('Сәуле ыдыстың қабырғасына тиді, нәтиже жуық болады.'); ok=false; }
+  }
+  const valid=R.map((r,i)=>({r,i})).filter(o=>o.r.status==='ok');
+  info.valid=valid;
+  if(valid.length>=2){
+    const ys=valid.map(o=>o.r.y); info.width=Math.max(...ys)-Math.min(...ys);
+    const sorted=valid.slice().sort((a,b)=>b.r.y-a.r.y); info.order=sorted.map(o=>o.i);
+  } else { info.width=null; info.order=valid.map(o=>o.i); }
+  if(!msgs.length) msgs.push('Спектр экранда пайда болды.');
+  const el=$('status'); el.textContent=msgs.join(' '); el.classList.toggle('warn',!(msgs.length===1&&msgs[0]==='Спектр экранда пайда болды.'));
+  let h='<b>Экрандағы түстер реті (жоғарыдан төмен):</b>';
+  if(info.order.length){ h+='<div class="seq">'+info.order.map(i=>'<span class="pill"><span class="dot" style="background:'+COLORS[i].c+';margin:0"></span>'+COLORS[i].k+'</span>').join('')+'</div>';
+    h+='<div class="note" style="margin-top:6px">Спектр ені (қызыл мен күлгін арасы): '+(info.width!==null?'<b>'+fm(info.width,2)+' см</b>':'анықталмады')+'</div>'; }
+  else h+='<div class="note" style="margin-top:6px">Экранда түс жоқ.</div>';
+  $('order').innerHTML=h;
+}
+
+/* ---------- 3D ---------- */
+let renderer,scene,camera,rayGroup,stripeGroup,wall,wallTex,sunMesh,sunHalo,mirror,table,webglOK=true;
+let az=0,el=.2,azT=0,elT=.2,dist=100,tx=25,drag=null;
+const stage=$('stage'), cv=$('c3d'), labelsEl=$('labels'); const labs={};
+['sun','mirror','water','screen'].forEach(k=>{const d=document.createElement('div'); d.className='vl'; labelsEl.appendChild(d); labs[k]=d;});
+labs.sun.textContent='Күн сәулесі'; labs.mirror.textContent='Айна'; labs.water.textContent='Су'; labs.screen.textContent='Экран';
+
+function makeWallTexture(){
+  const c=document.createElement('canvas'); c.width=400; c.height=500; const x=c.getContext('2d');
+  x.fillStyle='#ffffff'; x.fillRect(0,0,400,500);
+  x.font='bold 15px Nunito, sans-serif'; x.textBaseline='middle';
+  for(let y=WY0;y<=WY1;y+=5){
+    const py=(WY1-y)*10; x.strokeStyle=(y===0)?'#2f8fe0':(y%10===0?'#c3d6e6':'#e6eef5'); x.lineWidth=(y===0)?3:1;
+    x.beginPath(); x.moveTo(0,py); x.lineTo(400,py); x.stroke();
+    if(y%10===0){ x.fillStyle=(y===0)?'#1b66b0':'#5f7a92'; x.fillText(y+' см',8,py-9); }
+  }
+  x.fillStyle='#1b66b0'; x.font='bold 13px Nunito, sans-serif'; x.fillText('су бетінің деңгейі',90,(WY1)*10-9);
+  return new THREE.CanvasTexture(c);
+}
+function init3D(){
+  try{ renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }
+  catch(e){ webglOK=false; stage.innerHTML='<div style="padding:30px;font-weight:700">Браузер WebGL технологиясын қолдамайды. Басқа браузермен ашып көріңіз.</div>'; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setClearColor(0x000000,0);
+  scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(40,1,1,600);
+  scene.add(new THREE.AmbientLight(0xffffff,.85));
+  const dl=new THREE.DirectionalLight(0xffffff,.6); dl.position.set(20,60,50); scene.add(dl);
+  table=new THREE.Mesh(new THREE.BoxGeometry(140,1,60),new THREE.MeshLambertMaterial({color:0xf0dcb8})); table.position.set(15,-10.5,0); scene.add(table);
+  const gm=new THREE.MeshPhongMaterial({color:0xd6eefa,transparent:true,opacity:.25,shininess:120,specular:0xffffff,side:THREE.DoubleSide,depthWrite:false});
+  const glass=new THREE.Mesh(new THREE.CylinderGeometry(7,7,12,56,1,true),gm); glass.position.y=-4; glass.renderOrder=2; scene.add(glass);
+  const gb=new THREE.Mesh(new THREE.CylinderGeometry(7,7,.6,56),gm.clone()); gb.position.y=-9.7; gb.renderOrder=2; scene.add(gb);
+  const water=new THREE.Mesh(new THREE.CylinderGeometry(RW,RW,9.4,56),new THREE.MeshPhongMaterial({color:0x7cc8f2,transparent:true,opacity:.38,shininess:90,depthWrite:false}));
+  water.position.y=-5; water.renderOrder=1; scene.add(water);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(7,.18,8,56),new THREE.MeshPhongMaterial({color:0xeaf8ff})); rim.rotation.x=Math.PI/2; rim.position.y=2; scene.add(rim);
+  mirror=new THREE.Mesh(new THREE.BoxGeometry(ML,.3,5),new THREE.MeshPhongMaterial({color:0xf2f8fb,specular:0xffffff,shininess:220,emissive:0x8aa4b6,emissiveIntensity:.25}));
+  mirror.position.set(0,-MD,0); scene.add(mirror);
+  wallTex=makeWallTexture();
+  wall=new THREE.Mesh(new THREE.PlaneGeometry(40,50),new THREE.MeshBasicMaterial({map:wallTex,side:THREE.DoubleSide}));
+  wall.rotation.y=-Math.PI/2; wall.position.set(st.D,15,0); scene.add(wall);
+  const frameM=new THREE.Mesh(new THREE.BoxGeometry(.5,50.6,40.6),new THREE.MeshLambertMaterial({color:0xb7c6d4})); frameM.position.set(st.D+.3,15,0); scene.add(frameM);
+  sunMesh=new THREE.Mesh(new THREE.SphereGeometry(4,24,16),new THREE.MeshBasicMaterial({color:0xffc933})); scene.add(sunMesh);
+  sunHalo=new THREE.Mesh(new THREE.SphereGeometry(6.5,24,16),new THREE.MeshBasicMaterial({color:0xffe38a,transparent:true,opacity:.35})); scene.add(sunHalo);
+  rayGroup=new THREE.Group(); scene.add(rayGroup); stripeGroup=new THREE.Group(); scene.add(stripeGroup);
+  scene.userData.frame=frameM;
+  resize(); bindPointer(); requestAnimationFrame(frame);
+}
+function clearGroup(g){ while(g.children.length){ const m=g.children.pop(); if(m.geometry) m.geometry.dispose(); if(m.material) m.material.dispose(); } }
+const UP=new THREE.Vector3(0,1,0);
+function seg(a,b,color,rad_,op,order){
+  const A=new THREE.Vector3(a[0],a[1],0), B=new THREE.Vector3(b[0],b[1],0), len=A.distanceTo(B); if(len<1e-3) return;
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(rad_,rad_,len,8,1),new THREE.MeshBasicMaterial({color:color,transparent:true,opacity:op}));
+  m.position.copy(A).add(B).multiplyScalar(.5); m.quaternion.setFromUnitVectors(UP,B.clone().sub(A).normalize()); m.renderOrder=5; rayGroup.add(m);
+}
+function lamRGB(l){
+  let r=0,g=0,b=0;
+  if(l<440){r=-(l-440)/60;b=1} else if(l<490){g=(l-440)/50;b=1} else if(l<510){g=1;b=-(l-510)/20}
+  else if(l<580){r=(l-510)/70;g=1} else if(l<645){r=1;g=-(l-645)/65} else {r=1}
+  let f=1; if(l<420) f=.35+.65*(l-380)/40;
+  const c=v=>Math.round(255*Math.pow(Math.max(0,v*f),.8));
+  return 'rgb('+c(r)+','+c(g)+','+c(b)+')';
+}
+function rebuild3D(){
+  if(!webglOK) return;
+  clearGroup(rayGroup); clearGroup(stripeGroup);
+  mirror.rotation.z=rad(st.phi);
+  wall.position.x=st.D; scene.userData.frame.position.x=st.D+.3;
+  const P0=[X0,0], ta=rad(st.th1), da=[Math.sin(ta),-Math.cos(ta)], L=75;
+  const S=[P0[0]-da[0]*L, P0[1]-da[1]*L];
+  sunMesh.position.set(S[0],S[1],0); sunHalo.position.set(S[0],S[1],0);
+  seg(S,P0,0xffe9a3,.55,.22); seg(S,P0,0xfffbe6,.2,.95);
+  if(st.beams){
+    R.forEach((r,i)=>{
+      const col=new THREE.Color(COLORS[i].c), p=r.pts;
+      for(let k=0;k<p.length-1;k++){
+        const inAir=(k===2);
+        seg(p[k],p[k+1],col,inAir?.15:.1,inAir?.9:.85);
+      }
+    });
+  }
+  if(st.cont){
+    for(let i=0;i<RC.length-1;i++){
+      const a=RC[i], b=RC[i+1]; if(a.status!=='ok'||b.status!=='ok') continue;
+      const yc=(a.y+b.y)/2, h=Math.max(.25,Math.abs(a.y-b.y)*1.08);
+      const m=new THREE.Mesh(new THREE.PlaneGeometry(6,h),new THREE.MeshBasicMaterial({color:new THREE.Color(lamRGB(RC[i].l+5)),side:THREE.DoubleSide}));
+      m.rotation.y=-Math.PI/2; m.position.set(st.D-.08,yc,0); stripeGroup.add(m);
+    }
+  } else {
+    R.forEach((r,i)=>{ if(r.status!=='ok') return;
+      const m=new THREE.Mesh(new THREE.PlaneGeometry(6,.6),new THREE.MeshBasicMaterial({color:new THREE.Color(COLORS[i].c),side:THREE.DoubleSide}));
+      m.rotation.y=-Math.PI/2; m.position.set(st.D-.08,r.y,0); stripeGroup.add(m); });
+  }
+  fitCam();
+}
+function fitCam(){
+  if(!webglOK) return;
+  const t=Math.tan(rad(camera.fov/2)); const halfW=(st.D+18)/2;
+  dist=Math.max(85,halfW*1.1/(t*camera.aspect), 36/t*.9);
+}
+function resize(){
+  if(!webglOK) return;
+  const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); fitCam(); drawAll();
+}
+const _v=new THREE.Vector3();
+function placeLabel(k,x,y){
+  _v.set(x,y,0).project(camera); const w=stage.clientWidth,h=stage.clientHeight;
+  labs[k].style.left=(((_v.x+1)/2)*w)+'px'; labs[k].style.top=((1-_v.y)/2*h)+'px';
+}
+function frame(){
+  az+=(azT-az)*.15; el+=(elT-el)*.15;
+  camera.position.set(tx+Math.sin(az)*Math.cos(el)*dist, 6+Math.sin(el)*dist, Math.cos(az)*Math.cos(el)*dist);
+  camera.lookAt(tx,6,0);
+  placeLabel('sun',sunMesh.position.x,sunMesh.position.y+8);
+  placeLabel('mirror',0,-MD-4.2); placeLabel('water',-RW-.5,-1.5); placeLabel('screen',st.D,WY1+3);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+function bindPointer(){
+  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY}; cv.style.cursor='grabbing'; try{cv.setPointerCapture(e.pointerId);}catch(_){} });
+  cv.addEventListener('pointermove',e=>{
+    if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    azT=Math.max(-1.2,Math.min(1.2,azT+dx*.006)); if(e.pointerType!=='touch') elT=Math.max(.02,Math.min(1.35,elT+dy*.004));
+  });
+  const up=()=>{drag=null; cv.style.cursor='grab';}; cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+}
+document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.view; if(v==='front'){azT=0;elT=.2;} else if(v==='angle'){azT=.8;elT=.4;} else {azT=0;elT=1.3;}
+}));
+
+/* ---------- Басқару ---------- */
+function syncControls(){
+  $('s1').value=st.th1; $('s2').value=st.phi; $('s3').value=st.D; $('s4').value=st.ex;
+  $('v1').textContent=st.th1+'°'; $('v2').textContent=fm(st.phi,1)+'°'; $('v3').textContent=st.D+' см'; $('v4').textContent='×'+fm(st.ex,1).replace(',0','');
+  $('cCont').checked=st.cont; $('cBeam').checked=st.beams;
+  [...$('segLiq').children].forEach(b=>b.classList.toggle('on',b.dataset.liq===st.liq));
+}
+function update(){ syncControls(); recompute(); rebuild3D(); drawAll(); }
+$('s1').addEventListener('input',e=>{st.th1=+e.target.value; update();});
+$('s2').addEventListener('input',e=>{st.phi=+e.target.value; update();});
+$('s3').addEventListener('input',e=>{st.D=+e.target.value; update();});
+$('s4').addEventListener('input',e=>{st.ex=+e.target.value; update();});
+$('cCont').addEventListener('change',e=>{st.cont=e.target.checked; update();});
+$('cBeam').addEventListener('change',e=>{st.beams=e.target.checked; update();});
+$('segLiq').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; st.liq=b.dataset.liq; update();});
+const PRE={main:{th1:45,phi:-7,D:55,ex:4},flat:{th1:45,phi:0,D:55,ex:4},wide:{th1:45,phi:-8,D:60,ex:2},tir:{th1:45,phi:-10,D:55,ex:4}};
+document.querySelectorAll('[data-pre]').forEach(b=>b.addEventListener('click',()=>{ Object.assign(st,PRE[b.dataset.pre]); st.liq='water'; update(); }));
+
+/* ---------- Сызба және графиктер ---------- */
+function setupCanvas(c,h){ const W=c.parentElement.clientWidth-(c.parentElement.classList.contains('card')?40:0); const dpr=Math.min(window.devicePixelRatio||1,2); c.style.width=W+'px'; c.style.height=h+'px'; c.width=W*dpr; c.height=h*dpr; const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,h); return {x:x,W:W,H:h}; }
+function drawDiagram(){
+  const c=$('diag'); const full=c.parentElement.clientWidth-40; if(full<100) return;
+  const H=Math.max(240,Math.min(400,full*0.55)); const {x,W}=setupCanvas(c,H);
+  const x0=-12, x1=st.D+6, y0=-11.5, y1=42; const s=Math.min(W/(x1-x0),H/(y1-y0));
+  const ox=(W-(x1-x0)*s)/2, oy=(H-(y1-y0)*s)/2;
+  const X=v=>ox+(v-x0)*s, Y=v=>oy+(y1-v)*s;
+  x.fillStyle='#f5faff'; x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(124,200,242,.45)'; x.fillRect(X(-RW),Y(0),2*RW*s,9.7*s);
+  x.strokeStyle='#9bb3c6'; x.lineWidth=2; x.strokeRect(X(-7),Y(2),14*s,12*s);
+  x.fillStyle='#fff'; x.fillRect(X(st.D),Y(WY1),6,(WY1-WY0)*s); x.strokeStyle='#8aa3b8'; x.strokeRect(X(st.D),Y(WY1),6,(WY1-WY0)*s);
+  x.strokeStyle='#c9d9e6'; x.lineWidth=1; x.font='11px Nunito, sans-serif'; x.fillStyle='#5f7a92'; x.textAlign='left';
+  for(let y=0;y<=WY1;y+=10){ x.beginPath(); x.moveTo(X(st.D)-6,Y(y)); x.lineTo(X(st.D),Y(y)); x.stroke(); x.fillText(y,X(st.D)+9,Y(y)+4); }
+  x.strokeStyle='#2f8fe0'; x.lineWidth=1.5; x.beginPath(); x.moveTo(X(-RW-3),Y(0)); x.lineTo(X(st.D),Y(0)); x.stroke();
+  const ph=rad(st.phi); x.strokeStyle='#2c3e50'; x.lineWidth=4; x.lineCap='round'; x.beginPath(); x.moveTo(X(-ML/2*Math.cos(ph)),Y(-MD-ML/2*Math.sin(ph))); x.lineTo(X(ML/2*Math.cos(ph)),Y(-MD+ML/2*Math.sin(ph))); x.stroke();
+  x.strokeStyle='#d0dce6'; x.lineWidth=5; x.beginPath(); x.moveTo(X(-ML/2*Math.cos(ph)),Y(-MD-ML/2*Math.sin(ph))-2); x.lineTo(X(ML/2*Math.cos(ph)),Y(-MD+ML/2*Math.sin(ph))-2); x.stroke(); x.lineCap='butt';
+  const ta=rad(st.th1), da=[Math.sin(ta),-Math.cos(ta)], S=[X0-da[0]*30,-da[1]*30];
+  x.strokeStyle='#f0a500'; x.lineWidth=3; x.beginPath(); x.moveTo(X(S[0]),Y(S[1])); x.lineTo(X(X0),Y(0)); x.stroke();
+  x.setLineDash([5,4]); x.strokeStyle='#7a8fa3'; x.lineWidth=1;
+  x.beginPath(); x.moveTo(X(X0),Y(8)); x.lineTo(X(X0),Y(-7)); x.stroke();
+  const g=R[3]; if(g&&g.pts[2]){ const pe=g.pts[2]; x.beginPath(); x.moveTo(X(pe[0]),Y(8)); x.lineTo(X(pe[0]),Y(-7)); x.stroke(); }
+  x.setLineDash([]);
+  R.forEach((r,i)=>{ x.strokeStyle=COLORS[i].c; x.lineWidth=2; x.beginPath(); r.pts.forEach((p,k)=>{ const px=X(p[0]), py=Y(p[1]); if(k===0)x.moveTo(px,py); else x.lineTo(px,py); }); x.stroke(); });
+  x.fillStyle='#17406e'; x.font='700 12px Nunito, sans-serif';
+  x.fillText('θ₁ = '+st.th1+'°',X(X0)+8,Y(7)); 
+  if(g&&g.t2!==undefined) x.fillText('θ₂ = '+fm(g.t2,1)+'°',X(X0)+8,Y(-3));
+  if(g&&g.t4!==undefined&&g.pts[2]) x.fillText('θ₄ = '+fm(g.t4,1)+'°',X(g.pts[2][0])+8,Y(7));
+  x.fillText('Айна',X(-4),Y(-MD)+26); x.fillText('Экран',X(st.D)-14,Y(WY1)-6);
+}
+function lineChart(id,series,o){
+  const c=$(id); const W0=c.parentElement.clientWidth-40; if(W0<100) return;
+  const {x,W,H}=setupCanvas(c,W0<420?240:280);
+  const pl=48,pr=12,pt=14,pb=38,pw=W-pl-pr,ph=H-pt-pb;
+  const X=v=>pl+(v-o.xmin)/(o.xmax-o.xmin)*pw, Y=v=>pt+ph-(v-o.ymin)/(o.ymax-o.ymin)*ph;
+  x.font='11.5px Nunito, sans-serif'; x.fillStyle='#5f7a92'; x.strokeStyle='#e4eef6'; x.lineWidth=1;
+  for(let i=0;i<=4;i++){ const v=o.ymin+(o.ymax-o.ymin)*i/4, py=Y(v); x.beginPath(); x.moveTo(pl,py); x.lineTo(W-pr,py); x.stroke(); x.textAlign='right'; x.textBaseline='middle'; x.fillText(o.yfmt(v),pl-6,py); }
+  x.textAlign='center'; x.textBaseline='top';
+  for(let v=o.xmin;v<=o.xmax;v+=50){ const px=X(v); x.beginPath(); x.moveTo(px,pt); x.lineTo(px,pt+ph); x.stroke(); x.fillText(v,px,pt+ph+5); }
+  x.fillStyle='#17406e'; x.font='700 12px Nunito, sans-serif'; x.fillText(o.xl,pl+pw/2,H-16);
+  x.save(); x.translate(12,pt+ph/2); x.rotate(-Math.PI/2); x.textBaseline='middle'; x.fillText(o.yl,0,0); x.restore();
+  if(!series.pts.length){ x.fillStyle='#8a5a00'; x.textAlign='center'; x.font='700 13px Nunito, sans-serif'; x.fillText('Қазіргі параметрлерде экранда спектр жоқ',pl+pw/2,pt+ph/2); return; }
+  x.strokeStyle='#2f8fe0'; x.lineWidth=2.5; x.beginPath(); series.pts.forEach((p,i)=>{ const px=X(p[0]),py=Y(p[1]); if(i===0)x.moveTo(px,py); else x.lineTo(px,py); }); x.stroke();
+  series.dots.forEach(d=>{ x.fillStyle=d[2]; x.strokeStyle='#fff'; x.lineWidth=2; x.beginPath(); x.arc(X(d[0]),Y(d[1]),6,0,7); x.fill(); x.stroke(); });
+}
+function drawCharts(){
+  const nPts=[]; for(let l=400;l<=700;l+=10) nPts.push([l,nOf(l)]);
+  const ns=nPts.map(p=>p[1]), nmn=Math.min(...ns), nmx=Math.max(...ns), pad=(nmx-nmn)*.1||.001;
+  lineChart('ch1',{pts:nPts,dots:COLORS.map(c=>[c.l,nOf(c.l),c.c])},{xmin:400,xmax:700,ymin:nmn-pad,ymax:nmx+pad,xl:'Толқын ұзындығы λ, нм',yl:'n',yfmt:v=>fm(v,3)});
+  const yp=RC.filter(r=>r.status==='ok').map(r=>[r.l,r.y]);
+  const dots=R.map((r,i)=>r.status==='ok'?[r.l,r.y,COLORS[i].c]:null).filter(Boolean);
+  let ymn=0,ymx=1; if(yp.length){ const ys=yp.map(p=>p[1]); ymn=Math.min(...ys); ymx=Math.max(...ys); const pd=Math.max(.3,(ymx-ymn)*.15); ymn-=pd; ymx+=pd; }
+  lineChart('ch2',{pts:yp,dots:dots},{xmin:400,xmax:700,ymin:ymn,ymax:ymx,xl:'Толқын ұзындығы λ, нм',yl:'Биіктік y, см',yfmt:v=>fm(v,1)});
+}
+function drawTable(){
+  let t='<tr><th>Түс</th><th>λ, нм</th><th>n</th><th>θ₂, °</th><th>θ₃, °</th><th>θ₄, °</th><th>y, см</th></tr>';
+  R.forEach((r,i)=>{
+    const st4=r.status==='tir'?'тотальды шағылу':(r.t4!==undefined?fm(r.t4,1):'—');
+    t+='<tr><td><span class="dot" style="background:'+COLORS[i].c+'"></span>'+COLORS[i].k+'</td><td>'+r.l+'</td><td>'+fm(r.n,4)+'</td><td>'+fm(r.t2,1)+'</td><td>'+(r.t3!==undefined?fm(r.t3,1):'—')+'</td><td>'+st4+'</td><td>'+(r.y!==undefined&&r.status==='ok'?fm(r.y,2):(r.y!==undefined?fm(r.y,1)+' (экраннан тыс)':'—'))+'</td></tr>';
+  });
+  $('tbl').innerHTML=t;
+  const a=R[0], b=R[6]; let h='<li>Қызыл түстің сыну көрсеткіші n = '+fm(a.n,4)+', күлгінікі n = '+fm(b.n,4)+'. Күлгін көбірек сынады.</li>';
+  h+='<li>Судың шектік бұрышы қызыл үшін ≈ '+fm(deg(Math.asin(1/a.n)),1)+'°, күлгін үшін ≈ '+fm(deg(Math.asin(1/b.n)),1)+'°.</li>';
+  if(info.width!==null) h+='<li>Қазіргі параметрлерде спектр ені '+fm(info.width,2)+' см.</li>';
+  $('summary').innerHTML=h;
+}
+function drawAll(){ drawDiagram(); drawCharts(); drawTable(); }
+
+/* ---------- Теория кестесі ---------- */
+(function(){
+  let t='<tr><th>Түс</th><th>Толқын ұзындығы, нм</th><th>Су үшін n (шамамен)</th></tr>';
+  COLORS.forEach(c=>{ const n=LIQ.water.A+LIQ.water.B/(c.l*c.l); t+='<tr><td><span class="dot" style="background:'+c.c+'"></span>'+c.k+'</td><td>'+c.l+'</td><td>'+fm(n,4)+'</td></tr>'; });
+  $('colTbl').innerHTML=t;
+})();
+
+/* ---------- Журнал ---------- */
+const journal=[];
+function renderJ(){
+  let t='<tr><th>№</th><th>Түрі</th><th>Сұйықтық</th><th>θ₁, °</th><th>φ, °</th><th>Экран, см</th><th>Спектр ені, см</th><th>Түстер реті (жоғарыдан төмен)</th></tr>';
+  if(!journal.length) t+='<tr><td colspan="8" style="color:var(--muted)">Әзірге жазба жоқ.</td></tr>';
+  journal.forEach((j,i)=>{ t+='<tr><td>'+(i+1)+'</td><td>'+j.type+'</td><td>'+j.liq+'</td><td>'+j.a+'</td><td>'+j.phi+'</td><td>'+j.D+'</td><td>'+j.w+'</td><td style="white-space:normal">'+j.ord+'</td></tr>'; });
+  $('jTbl').innerHTML=t;
+}
+function addCurrent(){
+  journal.push({type:'Симулятор',liq:LIQ[st.liq].name,a:st.th1,phi:fm(st.phi,1),D:st.D,w:info.width!==null?fm(info.width,2):'—',ord:info.order.length?info.order.map(i=>COLORS[i].k.toLowerCase()).join(', '):'спектр жоқ'});
+  if(journal.length>40) journal.shift(); renderJ();
+}
+$('bLog').addEventListener('click',()=>{ addCurrent(); toast('Нәтиже журналға жазылды'); });
+$('jAdd').addEventListener('click',()=>{ addCurrent(); toast('Нәтиже журналға жазылды'); });
+$('oAdd').addEventListener('click',()=>{
+  const a=$('oA').value, d=$('oD').value, r=$('oR').value.trim();
+  if(!r){ toast('Түстер ретін жазыңыз'); return; }
+  journal.push({type:'Нақты тәжірибе',liq:'Су',a:a||'—',phi:'—',D:d||'—',w:'—',ord:r}); renderJ(); $('oR').value=''; toast('Бақылау қосылды');
+});
+$('jDel').addEventListener('click',()=>{journal.pop(); renderJ();});
+$('jClear').addEventListener('click',()=>{journal.length=0; renderJ();});
+$('jCopy').addEventListener('click',()=>{
+  const txt=journal.map((j,i)=>[i+1,j.type,j.liq,j.a,j.phi,j.D,j.w,j.ord].join('\t')).join('\n');
+  try{ navigator.clipboard.writeText('№\tТүрі\tСұйықтық\tθ1\tφ\tЭкран\tЕні\tРеті\n'+txt).then(()=>toast('Кесте көшірілді'),()=>toast('Көшіру мүмкін болмады')); }catch(e){ toast('Көшіру мүмкін болмады'); }
+});
+
+/* ---------- Тест ---------- */
+const QS=[
+ {q:'Қай түс судан өткенде ең көп сынады?',o:['Қызыл','Сары','Күлгін'],a:2,e:'Күлгін түстің толқын ұзындығы қысқа, сыну көрсеткіші ең үлкен.'},
+ {q:'Дисперсия дегеніміз не?',o:['Жарықтың шағылуы','Сыну көрсеткішінің толқын ұзындығына тәуелділігі','Жарықтың жұтылуы'],a:1,e:'Дисперсия ақ жарықтың түстерге ажырауына себеп болады.'},
+ {q:'Айна көлбеу болмаса (φ = 0), неге спектр көрінбейді?',o:['Жарық суға кірмейді','Барлық түстер параллель шығады','Айна жарықты жұтады'],a:1,e:'Кіру және шығу кезіндегі дисперсия бірін-бірі теңестіреді.'},
+ {q:'Тотальды ішкі шағылу қашан болады?',o:['Жарық ауадан суға өткенде','Түсу бұрышы шектік бұрыштан үлкен болғанда','Жарық мөлдір ортада таралғанда'],a:1,e:'Сонда жарық судан шықпай, қайта шағылады.'},
+ {q:'Экранды алыстатсақ спектр қалай өзгереді?',o:['Түстер арасы артады','Түстер арасы кемиді','Өзгермейді'],a:0,e:'Бұрыштық айырма қашықтық артқан сайын үлкен ұзындыққа айналады.'}
+];
+let qs=0;
+function renderQuiz(){
+  qs=0; $('score').textContent='Нәтиже: 0 / '+QS.length;
+  $('quiz').innerHTML=QS.map((q,i)=>'<div class="q" data-i="'+i+'"><p>'+(i+1)+'. '+q.q+'</p><div class="opts">'+q.o.map((t,k)=>'<button class="opt" data-k="'+k+'">'+t+'</button>').join('')+'</div><div class="exp">'+q.e+'</div></div>').join('');
+}
+$('quiz').addEventListener('click',e=>{
+  const b=e.target.closest('.opt'); if(!b) return; const box=b.closest('.q'); if(box.dataset.done) return;
+  const i=+box.dataset.i,k=+b.dataset.k; box.dataset.done=1;
+  box.querySelectorAll('.opt')[QS[i].a].classList.add('ok');
+  if(k===QS[i].a) qs++; else b.classList.add('bad');
+  box.querySelector('.exp').style.display='block'; $('score').textContent='Нәтиже: '+qs+' / '+QS.length;
+});
+$('qReset').addEventListener('click',renderQuiz);
+
+/* ---------- Сілтемелер ---------- */
+let tt;
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+document.querySelectorAll('.linkbtn').forEach(b=>b.addEventListener('click',()=>{
+  const id=b.dataset.id, url=location.href.split('#')[0]+'#'+id;
+  try{ navigator.clipboard.writeText(url).then(()=>toast('Сілтеме көшірілді'),()=>{location.hash=id; toast('Сілтеме мекенжай жолағында');}); }
+  catch(e){ location.hash=id; toast('Сілтеме мекенжай жолағында'); }
+}));
+
+/* ---------- Іске қосу ---------- */
+renderQuiz(); renderJ();
+syncControls(); recompute();
+init3D(); rebuild3D(); drawAll();
+window.addEventListener('resize',resize);
+if(window.ResizeObserver && webglOK) new ResizeObserver(resize).observe(stage);
+})();
+</script>
+</body>
+</html>
