@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>АЭС пен ЖЭО: салыстырмалы жоба зертханасы</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f5fbff; --card:#ffffff; --ink:#1b3550; --muted:#5d7890; --line:#d9e8f3;
+  --acc:#2a8fd8; --acc-d:#1766a8; --acc-l:#e2f1fc;
+  --n:#3a8ee6; --t:#f29a4a; --eco:#4cb782; --sun:#ffe08a;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+body{margin:0; background:linear-gradient(180deg,#f5fbff 0%,#fff8ee 100%); background-color:#f5fbff; color:var(--ink);
+  font-family:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; line-height:1.6; font-size:16px}
+a{color:var(--acc-d)}
+.wrap{max-width:1100px; margin:0 auto; padding:0 16px}
+
+nav.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:rgba(245,251,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:10px; padding-bottom:10px; scrollbar-width:none}
+nav.top a{flex:none; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px; padding:7px 14px; border-radius:999px; background:#fff; border:1px solid var(--line)}
+nav.top a:hover,nav.top a:focus-visible{background:var(--acc-l); border-color:var(--acc); outline:none}
+
+header.hero{position:relative; overflow:hidden; padding:44px 0 70px}
+.hero h1{font-size:clamp(32px,6.6vw,58px); line-height:1.07; margin:14px 0 14px; font-weight:900; letter-spacing:-.02em; color:#12406b; max-width:680px}
+.hero p.lead{font-size:clamp(16px,2.4vw,20px); max-width:600px; color:var(--muted); margin:0 0 22px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:#fff; border:1px solid var(--line); padding:5px 12px; border-radius:999px; font-size:13px; font-weight:700; color:var(--acc-d)}
+.btn{display:inline-block; border:0; cursor:pointer; font:inherit; font-weight:800; padding:11px 20px; border-radius:14px; background:var(--acc); color:#fff; text-decoration:none; box-shadow:0 6px 16px rgba(42,143,216,.28); transition:transform .15s, background .15s}
+.btn:hover{background:var(--acc-d); transform:translateY(-1px)}
+.btn.alt{background:#fff; color:var(--acc-d); border:1.5px solid var(--acc); box-shadow:none}
+.btn.alt:hover{background:var(--acc-l)}
+.btn.sm{padding:8px 14px; font-size:14px; border-radius:12px; box-shadow:none}
+.btn:focus-visible,.opt:focus-visible,.seg button:focus-visible{outline:3px solid #ffb74d; outline-offset:2px}
+.btns{display:flex; flex-wrap:wrap; gap:8px}
+.hero-art{position:absolute; right:1%; top:20px; width:min(44vw,460px)}
+@media (max-width:760px){.hero-art{opacity:.3; width:90vw; right:-18vw}}
+
+section{padding:44px 0 6px}
+.sh{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:6px}
+.sh h2{margin:0; font-size:clamp(24px,4vw,34px); font-weight:900; color:#12406b}
+.sh h2 a{color:inherit; text-decoration:none}
+.sh h2 a:hover{text-decoration:underline}
+.linkbtn{font:inherit; font-size:13px; font-weight:700; background:#fff; border:1px dashed var(--acc); color:var(--acc-d); border-radius:999px; padding:4px 12px; cursor:pointer}
+.linkbtn:hover{background:var(--acc-l)}
+.sub{color:var(--muted); margin:0 0 18px; max-width:780px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:20px; box-shadow:0 10px 28px rgba(27,53,80,.06)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.task{background:linear-gradient(135deg,#fff 0%,#fff1d6 100%); border-left:6px solid #f5b942; font-size:17px}
+.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.steps li{counter-increment:s; position:relative; padding:12px 14px 12px 56px; background:#fff; border:1px solid var(--line); border-radius:16px}
+.steps li::before{content:counter(s); position:absolute; left:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--acc-l); color:var(--acc-d); font-weight:900; display:grid; place-items:center}
+.formula{font-size:clamp(16px,2.8vw,21px); font-weight:800; background:var(--acc-l); border-radius:14px; padding:12px 14px; margin:10px 0; overflow-x:auto; white-space:nowrap}
+.note{font-size:13.5px; color:var(--muted)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+th{background:#ecf5fd; color:#12406b}
+td.num,th.num{text-align:right}
+.ul{margin:0; padding-left:20px}
+.ul li{margin:6px 0}
+.dot{display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle}
+.tagN{color:var(--n); font-weight:800} .tagT{color:#d9741c; font-weight:800}
+
+.lab{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start}
+@media (max-width:920px){.lab{grid-template-columns:1fr}}
+.stage{position:relative; border-radius:22px; overflow:hidden; border:1px solid var(--line); height:470px;
+  background:linear-gradient(180deg,#dff1ff 0%,#fdf6e4 100%); background-color:#dff1ff}
+@media (max-width:600px){.stage{height:400px}}
+#c3d{width:100%; height:100%; display:block; touch-action:pan-y; cursor:grab}
+#labels{position:absolute; inset:0; pointer-events:none}
+.vl{position:absolute; transform:translate(-50%,-50%); font-size:12px; font-weight:800; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:8px; padding:2px 8px; color:var(--ink); white-space:nowrap}
+.vl.n{border-color:var(--n); color:#1766a8} .vl.t{border-color:var(--t); color:#b35a0c}
+.views{position:absolute; right:10px; top:10px; display:flex; gap:6px}
+.views button{font:inherit; font-size:12px; font-weight:800; border:1px solid var(--line); background:rgba(255,255,255,.93); border-radius:10px; padding:5px 9px; cursor:pointer; color:var(--ink)}
+.views button:hover{background:var(--acc-l)}
+.hint{position:absolute; left:10px; bottom:8px; right:10px; font-size:12px; color:var(--muted); font-weight:700; pointer-events:none}
+.kpi{margin-top:14px}
+.ctl{display:grid; gap:14px}
+.ctl h3{margin:0 0 6px; font-size:15px; color:#12406b}
+.seg{display:flex; gap:6px; flex-wrap:wrap}
+.seg button{flex:1; min-width:84px; font:inherit; font-weight:800; font-size:14px; border:1.5px solid var(--line); background:#fff; border-radius:12px; padding:9px 8px; cursor:pointer; color:var(--ink)}
+.seg button.on{background:var(--acc); border-color:var(--acc); color:#fff}
+input[type=range]{width:100%; accent-color:var(--acc); height:28px}
+.row{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-weight:700; font-size:14.5px}
+.row b{color:var(--acc-d); font-size:17px; white-space:nowrap}
+details{border:1px solid var(--line); border-radius:14px; padding:8px 12px; background:#f8fcff}
+details summary{cursor:pointer; font-weight:800; color:#12406b}
+details[open] summary{margin-bottom:10px}
+details .ctl{margin-top:4px}
+.mini{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.mini div{border-radius:14px; padding:8px 10px; border:1px solid var(--line)}
+.mini .n{background:#eaf4fe} .mini .t{background:#fff1e2}
+.mini span{display:block; font-size:12px; color:var(--muted); font-weight:700}
+.mini b{font-size:17px}
+
+canvas.plot{width:100%; display:block; background:#fff; border:1px solid var(--line); border-radius:18px}
+.sumlist{margin:10px 0 0; padding-left:20px}
+.stat3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+@media (max-width:760px){.stat3{grid-template-columns:1fr}}
+.stat3 .card b{font-size:26px; color:#12406b; display:block; line-height:1.15}
+.stat3 .card span{font-size:13.5px; color:var(--muted); font-weight:700}
+
+.scorebar{height:30px; border-radius:15px; background:#eef4fa; overflow:hidden; display:flex; margin:6px 0 4px}
+.scorebar i{display:block; height:100%; color:#fff; font-style:normal; font-weight:900; font-size:14px; display:flex; align-items:center; padding:0 12px; white-space:nowrap; transition:width .3s}
+.verdict{background:#e9f8ef; border:1px solid #a9deb9; color:#17623a; border-radius:14px; padding:12px 14px; font-weight:800; margin-top:10px}
+.script{background:#fffdf5; border:1px solid #f0e2b6; border-radius:16px; padding:16px 18px; font-size:15.5px; line-height:1.7}
+.script p{margin:0 0 10px}
+
+.q{margin-bottom:14px}
+.q p{font-weight:800; margin:0 0 8px}
+.opts{display:grid; gap:8px}
+.opt{font:inherit; text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:10px 14px; cursor:pointer; color:var(--ink); font-weight:600}
+.opt:hover{background:var(--acc-l)}
+.opt.ok{background:#d9f6e7; border-color:#43c585}
+.opt.bad{background:#ffe3e8; border-color:#ff8aa1}
+.exp{font-size:14px; color:var(--muted); margin-top:6px; display:none}
+.score{font-size:20px; font-weight:900; color:var(--acc-d)}
+footer{margin-top:50px; padding:26px 0 40px; background:#e1effb; color:var(--muted); font-size:14px}
+#toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%) translateY(30px); background:#12406b; color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; opacity:0; transition:.25s; z-index:99; pointer-events:none}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Бөлімдер">
+  <div class="wrap">
+    <a href="#intro">Кіріспе</a>
+    <a href="#theory">Теория</a>
+    <a href="#lab">3D зертхана</a>
+    <a href="#analysis">Талдау</a>
+    <a href="#defense">Жобаны қорғау</a>
+    <a href="#test">Тест</a>
+    <a href="#conclusion">Қорытынды</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="chips"><span class="chip">Шығармашылық тапсырма · 232-бет</span><span class="chip">3D виртуалды зертхана</span><span class="chip">Энергетика</span></div>
+    <h1>АЭС пен ЖЭО: қайсысы тиімді?</h1>
+    <p class="lead">Екі станцияны отын шығыны, экологиялық әсері және электр энергиясының өзіндік құны бойынша салыстырып, жобаны дәлелмен қорғаймыз.</p>
+    <div class="btns"><a class="btn" href="#lab">Зертханаға өту</a><a class="btn alt" href="#defense">Жобаны қорғау</a></div>
+  </div>
+  <svg class="hero-art" viewBox="0 0 460 260" aria-hidden="true">
+    <rect x="0" y="228" width="460" height="14" rx="7" fill="#d8e9f6"/>
+    <path d="M40 228 C52 180 52 150 46 110 L96 110 C90 150 90 180 102 228Z" fill="#cfe3f5"/>
+    <path d="M118 228 C130 180 130 150 124 110 L174 110 C168 150 168 180 180 228Z" fill="#cfe3f5"/>
+    <path d="M200 228 V150 a40 40 0 0 1 80 0 V228Z" fill="#f4f8fc" stroke="#9cc4ea" stroke-width="3"/>
+    <rect x="330" y="150" width="70" height="78" rx="4" fill="#f6dcc3"/>
+    <rect x="410" y="40" width="22" height="188" fill="#e6d8cb"/><rect x="410" y="60" width="22" height="10" fill="#e1664f"/><rect x="410" y="86" width="22" height="10" fill="#e1664f"/>
+    <g fill="#ffffff" opacity=".9"><circle cx="76" cy="90" r="20"/><circle cx="104" cy="70" r="24"/><circle cx="150" cy="86" r="20"/><circle cx="178" cy="64" r="24"/></g>
+    <g fill="#9aa5b1" opacity=".75"><circle cx="425" cy="28" r="16"/><circle cx="446" cy="10" r="14"/><circle cx="455" cy="40" r="12"/></g>
+  </svg>
+</header>
+
+<main class="wrap">
+
+<section id="intro">
+  <div class="sh"><h2><a href="#intro">Кіріспе: тапсырма</a></h2><button class="linkbtn" data-id="intro">Сілтемені көшіру</button></div>
+  <p class="sub">Бұл бөлімде тапсырма шарты, мақсаты және жоба құрылымы берілген.</p>
+  <div class="card task">
+    <b>Шығармашылық тапсырма (232-бет):</b> атом электр станциясы (АЭС) мен жылу электр орталығының (ЖЭО) экологиялық және экономикалық тиімділігін, отын шығынын салыстырмалы жоба түрінде қорғаңыз.
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3 style="margin-top:0">Жобаның мақсаты</h3>
+      <ul class="ul">
+        <li>Бірдей электр қуатына қажет отын шығынын есептеу.</li>
+        <li>Қоршаған ортаға әсерін (CO₂, SO₂, NOx, қатты және радиоактивті қалдық) салыстыру.</li>
+        <li>Электр энергиясының өзіндік құнын (LCOE) және шығындардың өтелуін анықтау.</li>
+        <li>Қорытынды шығарып, таңдауды дәлелдеп қорғау.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Жоба құрылымы</h3>
+      <ol class="steps">
+        <li>Теориялық негізді оқу.</li>
+        <li>Зертханада параметрлерді өзгертіп, екі станцияны 3D көріністе бақылау.</li>
+        <li>Графиктер мен кестені талдау.</li>
+        <li>Критерийлер салмағын таңдап, жобаны қорғау мәтінін дайындау.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="theory">
+  <div class="sh"><h2><a href="#theory">Теориялық негіз</a></h2><button class="linkbtn" data-id="theory">Сілтемені көшіру</button></div>
+  <p class="sub">Екі станцияда да турбина мен генератор бар. Негізгі айырмашылық жылудың қайдан алынатынында.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0"><span class="tagN">АЭС</span>: ядролық бөліну</h3>
+      <p>Реакторда уран-235 ядролары бөлінеді де, жылу бөлінеді. Жылу суды қыздырып, бу түзеді. Бу турбинаны айналдырады, турбина генераторды жүргізеді.</p>
+      <p class="note" style="margin-bottom:0">Отын шығыны өте аз. Отынның негізгі қалдығы — жұмсалған ядролық отын, ол арнайы қоймада сақталады.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="tagT">ЖЭО</span>: отынның жануы</h3>
+      <p>Қазандықта көмір, газ немесе мазут жағылады. Жылу суды буға айналдырады. Бу турбинаны айналдырады. Жану кезінде көмірқышқыл газы мен басқа заттар бөлінеді.</p>
+      <p class="note" style="margin-bottom:0">ЖЭО электр энергиясымен қатар қала үшін жылу да береді. Бұл жобада тек электр өндірісі салыстырылады.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Отын шығыны</h3>
+      <div class="formula">B = E · 3,6 / (η · q)</div>
+      <p class="note">B — жылдық отын массасы (т), E — өндірілген энергия (МВт·сағ), η — ПӘК, q — отынның жану жылуы (ГДж/т). Ядролық отын үшін q орнына күйіп-бітуі (≈ 3,9 млн ГДж/т) алынады.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Өзіндік құн (LCOE)</h3>
+      <div class="formula">LCOE = (К·CRF + Пайд.) / E + Отын + CO₂ салығы</div>
+      <p class="note">К — күрделі салым, CRF — жылдық төлем коэффициенті, Пайд. — пайдалану шығыны. Нәтиже 1 кВт·сағ энергияның құнын (цент) көрсетеді.</p>
+    </div>
+  </div>
+  <div class="card scroll" style="margin-top:16px">
+    <h3 style="margin-top:0">1 кг отынның энергиясы (шамамен)</h3>
+    <table>
+      <tr><th>Отын</th><th class="num">Энергия, МДж/кг</th><th class="num">Көмірмен салыстырғанда</th></tr>
+      <tr><td>Көмір (Екібастұз типті)</td><td class="num">≈ 17</td><td class="num">1</td></tr>
+      <tr><td>Мазут</td><td class="num">≈ 41</td><td class="num">≈ 2,4 есе</td></tr>
+      <tr><td>Табиғи газ</td><td class="num">≈ 50</td><td class="num">≈ 3 есе</td></tr>
+      <tr><td>Уран-235 (толық бөлінгенде)</td><td class="num">≈ 80 000 000</td><td class="num">≈ 5 миллион есе</td></tr>
+    </table>
+    <p class="note" style="margin-bottom:0">Нақты реакторда уран толық бөлінбейді, сондықтан отын шығыны одан көп. Бірақ ол көмірден әлі де мыңдаған есе аз.</p>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin-top:0">Қазақстандық мәнмәтін</h3>
+    <p style="margin-bottom:0">Қазақстанда электр энергиясының басым бөлігі көмірмен жұмыс істейтін станцияларда өндіріледі. Елде АЭС салу туралы 2024 жылы республикалық референдум өтті. Сондықтан бұл тақырып өзекті, ал таңдауды есеппен дәлелдеу маңызды.</p>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="sh"><h2><a href="#lab">3D виртуалды зертхана</a></h2><button class="linkbtn" data-id="lab">Сілтемені көшіру</button></div>
+  <p class="sub">Сол жақта АЭС, оң жақта ЖЭО. Түтін мен бу, отын қоры және сандар жылжытқыштарға қарай бірден өзгереді. Сахнаны сүйреп айналдыруға болады.</p>
+  <div class="lab">
+    <div>
+      <div class="stage" id="stage">
+        <canvas id="c3d" aria-label="АЭС пен ЖЭО 3D көрінісі"></canvas>
+        <div id="labels"></div>
+        <div class="views">
+          <button data-view="front">Алдынан</button>
+          <button data-view="angle">Бұрыштан</button>
+          <button data-view="top">Жоғарыдан</button>
+        </div>
+        <div class="hint" id="hint"></div>
+      </div>
+      <div class="card kpi">
+        <div class="mini" id="mini"></div>
+      </div>
+    </div>
+
+    <div class="card ctl">
+      <div>
+        <h3>Дайын жағдайлар</h3>
+        <div class="btns">
+          <button class="btn sm" data-pre="base">Негізгі</button>
+          <button class="btn sm alt" data-pre="cheap">Арзан көмір</button>
+          <button class="btn sm alt" data-pre="carbon">Жоғары көміртегі салығы</button>
+          <button class="btn sm alt" data-pre="gas">Газ ЖЭО</button>
+        </div>
+      </div>
+      <div>
+        <h3>ЖЭО отыны</h3>
+        <div class="seg" id="segFuel">
+          <button data-fuel="coal" class="on">Көмір</button>
+          <button data-fuel="gas">Газ</button>
+          <button data-fuel="oil">Мазут</button>
+        </div>
+      </div>
+      <div>
+        <div class="row"><span>Электр қуаты</span><b id="v1"></b></div>
+        <input type="range" id="s1" min="200" max="2000" step="100" aria-label="Қуат">
+      </div>
+      <div>
+        <div class="row"><span>Қуатты пайдалану коэффициенті</span><b id="v2"></b></div>
+        <input type="range" id="s2" min="50" max="95" step="1" aria-label="Пайдалану коэффициенті">
+      </div>
+      <div>
+        <div class="row"><span id="l3">Отын бағасы</span><b id="v3"></b></div>
+        <input type="range" id="s3" aria-label="Отын бағасы">
+      </div>
+      <div>
+        <div class="row"><span>CO₂ шығарындысы үшін баға</span><b id="v4"></b></div>
+        <input type="range" id="s4" min="0" max="100" step="5" aria-label="Көміртегі бағасы">
+      </div>
+      <details>
+        <summary>Қосымша параметрлер</summary>
+        <div class="ctl">
+          <div><div class="row"><span>Ядролық отын бағасы</span><b id="v5"></b></div><input type="range" id="s5" min="1500" max="4000" step="100" aria-label="Уран отыны бағасы"></div>
+          <div><div class="row"><span>АЭС құрылыс құны</span><b id="v6"></b></div><input type="range" id="s6" min="3000" max="9000" step="250" aria-label="АЭС құны"></div>
+          <div><div class="row"><span>ЖЭО құрылыс құны</span><b id="v7"></b></div><input type="range" id="s7" min="600" max="3000" step="50" aria-label="ЖЭО құны"></div>
+          <div><div class="row"><span>Дисконт мөлшерлемесі</span><b id="v8"></b></div><input type="range" id="s8" min="3" max="12" step="0.5" aria-label="Дисконт"></div>
+        </div>
+      </details>
+      <div class="note">Мәндер оқу мақсатына арналған шамамен деректер. Бағалар АҚШ долларымен берілген.</div>
+    </div>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="sh"><h2><a href="#analysis">Талдау: график және кесте</a></h2><button class="linkbtn" data-id="analysis">Сілтемені көшіру</button></div>
+  <p class="sub">Нәтижелер зертханадағы параметрлерге қарай бірден жаңарады.</p>
+  <div class="stat3" id="stat3"></div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card"><h3 style="margin-top:0">Электр энергиясының өзіндік құны</h3><canvas class="plot" id="ch1"></canvas></div>
+    <div class="card"><h3 style="margin-top:0">Қоршаған ортаға әсер және отын (салыстырмалы)</h3><canvas class="plot" id="ch2"></canvas></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin-top:0">Жинақталған шығындар және өтелу мерзімі</h3>
+    <canvas class="plot" id="ch3"></canvas>
+    <p class="note" id="beNote" style="margin-bottom:0"></p>
+  </div>
+  <div class="card scroll" style="margin-top:16px">
+    <h3 style="margin-top:0">Есептеу кестесі (жылына)</h3>
+    <table id="tbl"></table>
+  </div>
+</section>
+
+<section id="defense">
+  <div class="sh"><h2><a href="#defense">Жобаны қорғау</a></h2><button class="linkbtn" data-id="defense">Сілтемені көшіру</button></div>
+  <p class="sub">Критерийлердің маңыздылығын өзіңіз таңдаңыз. Жүйе екі станцияға балл қояды және қорғау мәтінін автоматты дайындайды.</p>
+  <div class="grid2">
+    <div class="card ctl">
+      <h3 style="margin:0">Критерийлердің салмағы (0–10)</h3>
+      <div><div class="row"><span>CO₂ шығарындысы</span><b id="w1v"></b></div><input type="range" id="w1" min="0" max="10" step="1" value="6"></div>
+      <div><div class="row"><span>Ауа ластаушылары (SO₂, NOx, шаң)</span><b id="w2v"></b></div><input type="range" id="w2" min="0" max="10" step="1" value="4"></div>
+      <div><div class="row"><span>Электр энергиясының құны</span><b id="w3v"></b></div><input type="range" id="w3" min="0" max="10" step="1" value="8"></div>
+      <div><div class="row"><span>Отын шығыны және тасымалы</span><b id="w4v"></b></div><input type="range" id="w4" min="0" max="10" step="1" value="3"></div>
+      <div><div class="row"><span>Қауіпсіздік және қалдықпен жұмыс</span><b id="w5v"></b></div><input type="range" id="w5" min="0" max="10" step="1" value="6"></div>
+      <h3 style="margin:6px 0 0">Сіздің бағаңыз: қауіпсіздік (1–10)</h3>
+      <div><div class="row"><span>АЭС (авария қаупі, радиоактивті қалдық)</span><b id="a1v"></b></div><input type="range" id="a1" min="1" max="10" step="1" value="7"></div>
+      <div><div class="row"><span>ЖЭО (денсаулыққа әсері, күл үйінділері)</span><b id="a2v"></b></div><input type="range" id="a2" min="1" max="10" step="1" value="5"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Жалпы балл</h3>
+      <div class="row"><span class="tagN">АЭС</span><b id="scN"></b></div>
+      <div class="scorebar" id="barN"><i style="background:var(--n)"></i></div>
+      <div class="row"><span class="tagT">ЖЭО</span><b id="scT"></b></div>
+      <div class="scorebar" id="barT"><i style="background:var(--t)"></i></div>
+      <div class="verdict" id="verdict"></div>
+      <h3>Критерийлер бойынша балл</h3>
+      <div class="scroll"><table id="critTbl"></table></div>
+      <p class="note" style="margin-bottom:0">Әр критерийде балл теңдей 50 болса, екі нұсқа тең. Көрсеткіш кіші болған жағы жоғары балл алады.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="sh" style="margin-bottom:10px"><h3 style="margin:0">Қорғау мәтіні (шамамен 3 минут)</h3><button class="btn sm" id="bCopy">Мәтінді көшіру</button></div>
+    <div class="script" id="script"></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin-top:0">Қорғау жоспары</h3>
+    <ol class="steps">
+      <li>Тақырып пен мақсатты атаңыз (30 секунд).</li>
+      <li>Отын шығыны бойынша 3D көріністі көрсетіңіз (40 секунд).</li>
+      <li>Экологиялық көрсеткіштерді салыстырыңыз (40 секунд).</li>
+      <li>Экономика: LCOE мен өтелу мерзімі (40 секунд).</li>
+      <li>Қорытынды мен ұсыныс (30 секунд).</li>
+    </ol>
+  </div>
+</section>
+
+<section id="test">
+  <div class="sh"><h2><a href="#test">Білімді тексер</a></h2><button class="linkbtn" data-id="test">Сілтемені көшіру</button></div>
+  <p class="sub">Алты сұраққа жауап беріңіз. Дұрыс жауап жасыл түспен көрсетіледі.</p>
+  <div class="card">
+    <div id="quiz"></div>
+    <div class="btns" style="align-items:center"><span class="score" id="score"></span><button class="btn sm alt" id="qReset">Қайта бастау</button></div>
+  </div>
+</section>
+
+<section id="conclusion">
+  <div class="sh"><h2><a href="#conclusion">Қорытынды</a></h2><button class="linkbtn" data-id="conclusion">Сілтемені көшіру</button></div>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">Негізгі тұжырымдар</h3>
+      <ul class="ul">
+        <li>АЭС отынды өте аз мөлшерде жұмсайды: бір гигаваттық станцияға жылына ондаған тонна ядролық отын жеткілікті, ал көмір ЖЭО-ға миллиондаған тонна қажет.</li>
+        <li>АЭС жұмыс кезінде CO₂ мен күкірт қосылыстарын іс жүзінде шығармайды. ЖЭО-ның шығарындысы отынға байланысты: көмірде ең көп, газда екі есе аз.</li>
+        <li>АЭС-тің құрылыс құны жоғары, ал отын шығыны төмен. ЖЭО-да керісінше. Көміртегі салығы артқан сайын ЖЭО-ның құны өседі.</li>
+        <li>АЭС-тің негізгі мәселелері: радиоактивті қалдықты сақтау, авария қаупі және құрылыстың ұзақтығы.</li>
+        <li>Таңдау сенімді есептер мен критерийлердің салмағына байланысты. Зертхана осы есепті көрнекі етеді.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Қорғау кезіндегі кеңес</h3>
+      <ul class="ul">
+        <li>Сандарды зертханадан алыңыз, параметрлерін айтып отырыңыз.</li>
+        <li>Екі жақтың артықшылығы мен кемшілігін де атаңыз.</li>
+        <li>Көміртегі бағасын және құрылыс құнын өзгертіп, нәтиженің қалай ауысатынын көрсетіңіз.</li>
+        <li>Соңында өз ұсынысыңызды бір сөйлеммен айтыңыз.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Бұл оқу симуляторы жалпы қабылданған үлгілік мәндерге негізделген. Нақты станцияның көрсеткіштері жобаға, отын сапасына және заңнамаға байланысты өзгереді, сондықтан нақты шешім үшін жеке инженерлік есеп қажет.</div>
+</footer>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const fm=(x,d)=>x.toFixed(d).replace('.',',');
+const nf=(x,d)=>{ const s=(+x).toFixed(d||0); const p=s.split('.'); p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0'); return p.join(','); };
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- Деректер ---------- */
+const FUELS={
+ coal:{name:'көмір',full:'Көмір (Екібастұз типті)',eta:.36,q:17,co2:94.6,so2:2.0,nox:1.2,pm:.15,ash:.4,capex:1800,om:55,life:40,unit:'$/т',pmin:10,pmax:150,pstep:5,pdef:40,gen:'көмір',color:0x555b61,cube:0x4b4f55},
+ gas: {name:'газ',full:'Табиғи газ',eta:.50,q:50,co2:56.1,so2:.01,nox:.4,pm:.01,ash:0,capex:1000,om:25,life:30,unit:'$/1000 м³',pmin:50,pmax:500,pstep:10,pdef:150,color:0xe8eef5,cube:0x8fb8e8},
+ oil: {name:'мазут',full:'Мазут',eta:.38,q:41,co2:77.4,so2:1.5,nox:.9,pm:.1,ash:.005,capex:1200,om:35,life:30,unit:'$/т',pmin:200,pmax:900,pstep:10,pdef:500,color:0x6b6560,cube:0x7a5b3c}
+};
+const NUC={eta:.33,burn:3.888e6,nat:9,co2lc:12,life:60,om:130};
+const st={P:1000,cf:80,fuel:'coal',price:40,carbon:10,uprice:2300,capN:5000,capT:1800,rate:8};
+
+function crf(r,n){ r=r/100; return r/(1-Math.pow(1+r,-n)); }
+function calc(){
+  const F=FUELS[st.fuel], E=st.P*8760*st.cf/100; // МВт·сағ/жыл
+  const kWh=E*1000, GJe=E*3.6;
+  const T={}, Nn={};
+  // ЖЭО
+  const Eth=GJe/F.eta;
+  T.mass=Eth/F.q; T.vol=Eth*1000/35.8; // т ; м3 (газ)
+  T.co2=Eth*F.co2/1000; T.so2=F.so2*E/1000; T.nox=F.nox*E/1000; T.pm=F.pm*E/1000;
+  T.waste=T.mass*F.ash; T.intens=Eth*F.co2/E; // кг/МВт·сағ = г/кВт·сағ
+  T.capex=st.P*1000*st.capT; T.capAnn=T.capex*crf(st.rate,F.life); T.om=st.P*1000*F.om;
+  T.fuelCost= st.fuel==='gas'? T.vol/1000*st.price : T.mass*st.price;
+  T.carbonCost=T.co2*st.carbon;
+  T.opYear=T.om+T.fuelCost+T.carbonCost; T.total=T.capAnn+T.opYear;
+  T.parts=[T.capAnn,T.om,T.fuelCost,T.carbonCost].map(v=>v/kWh*100);
+  T.lcoe=T.total/kWh*100; T.life=F.life;
+  // АЭС
+  const Ethn=GJe/NUC.eta;
+  Nn.mass=Ethn/NUC.burn; Nn.nat=Nn.mass*NUC.nat;
+  Nn.co2=E*NUC.co2lc/1000; Nn.so2=0; Nn.nox=0; Nn.pm=0; Nn.waste=Nn.mass; Nn.intens=NUC.co2lc;
+  Nn.capex=st.P*1000*st.capN; Nn.capAnn=Nn.capex*crf(st.rate,NUC.life); Nn.om=st.P*1000*NUC.om;
+  Nn.fuelCost=Nn.mass*1000*st.uprice; Nn.carbonCost=Nn.co2*st.carbon;
+  Nn.opYear=Nn.om+Nn.fuelCost+Nn.carbonCost; Nn.total=Nn.capAnn+Nn.opYear;
+  Nn.parts=[Nn.capAnn,Nn.om,Nn.fuelCost,Nn.carbonCost].map(v=>v/kWh*100);
+  Nn.lcoe=Nn.total/kWh*100; Nn.life=NUC.life;
+  return {E:E,T:T,N:Nn,F:F};
+}
+let R=calc();
+
+function massTxt(t){ if(t>=1e6) return fm(t/1e6,2)+' млн т'; if(t>=1e4) return nf(t/1e3,0)+' мың т'; if(t>=1e3) return fm(t/1e3,1)+' мың т'; return fm(t,1)+' т'; }
+function fuelTxtT(){ return st.fuel==='gas'? nf(R.T.vol/1e6,0)+' млн м³ газ' : massTxt(R.T.mass); }
+function ktTxt(t){ return nf(t/1000,t/1000<10?1:0)+' мың т'; }
+function toneTxt(t){ return t<1?'0':(t>=1e3?ktTxt(t):fm(t,0)+' т'); }
+
+/* ---------- 3D ---------- */
+let renderer,scene,camera,webglOK=true;
+let az=.35,el=.42,azT=.35,elT=.42,dist=120,drag=null;
+const stage=$('stage'), cv=$('c3d'), labelsEl=$('labels');
+const labs={}; [['n','АЭС','n'],['t','ЖЭО','t'],['fn','Уран отыны (1 жылда)','n'],['ft','Көмір қоры (1 жылда)','t']].forEach(a=>{ const d=document.createElement('div'); d.className='vl '+a[2]; d.textContent=a[1]; labelsEl.appendChild(d); labs[a[0]]=d; });
+let sphereGeo, emitters=[], cubeN, cubeT, wallTop=0;
+const BASE=.35;
+
+function makeEmitter(x,y,z,n,o){
+  const puffs=[]; for(let i=0;i<n;i++){ const m=new THREE.Mesh(sphereGeo,new THREE.MeshLambertMaterial({color:o.color,transparent:true,opacity:0,depthWrite:false})); m.visible=false; scene.add(m); puffs.push({m:m,age:99,life:1}); }
+  return {x:x,y:y,z:z,puffs:puffs,acc:0,rate:o.rate,color:o.color,alpha:o.alpha,size:o.size,rise:o.rise};
+}
+function updEmitter(e,dt){
+  e.acc+=dt*e.rate;
+  while(e.acc>=1){ e.acc-=1; const p=e.puffs.find(q=>q.age>=q.life); if(!p) break; p.age=0; p.life=3.6+Math.random()*2; p.m.position.set(e.x+(Math.random()-.5)*.6,e.y,e.z+(Math.random()-.5)*.6); p.m.visible=true; p.m.material.color.setHex(e.color); }
+  e.puffs.forEach(p=>{ if(p.age>=p.life){p.m.visible=false;return;} p.age+=dt; const k=p.age/p.life;
+    p.m.position.y+=e.rise*dt; p.m.position.x+=(1.1+k*1.5)*dt*.7; const s=e.size*(.6+k*2.3); p.m.scale.set(s,s,s);
+    p.m.material.opacity=e.alpha*(1-k)*Math.min(1,k*7+.25); });
+}
+function towerGeo(h,rb,rn){
+  const pts=[]; const k=(rb*rb-rn*rn)/(.65*.65);
+  for(let i=0;i<=18;i++){ const t=i/18; pts.push(new THREE.Vector2(Math.sqrt(rn*rn+k*(t-.65)*(t-.65)),t*h)); }
+  return new THREE.LatheGeometry(pts,36);
+}
+function box(w,h,d,x,y,z,color){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshLambertMaterial({color:color})); m.position.set(x,y,z); scene.add(m); return m; }
+function init3D(){
+  try{ renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }
+  catch(e){ webglOK=false; stage.innerHTML='<div style="padding:30px;font-weight:700">Браузер WebGL технологиясын қолдамайды. Басқа браузермен ашып көріңіз.</div>'; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setClearColor(0x000000,0);
+  scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(40,1,1,600);
+  scene.add(new THREE.AmbientLight(0xffffff,.85));
+  const dl=new THREE.DirectionalLight(0xffffff,.65); dl.position.set(30,60,40); scene.add(dl);
+  sphereGeo=new THREE.SphereGeometry(1,9,7);
+  box(84,.7,48,0,-.35,0,0xe3f2e0);
+  box(36,.7,42,-20,0,0,0xd6e8f9); box(36,.7,42,20,0,0,0xfce7cf); box(3,.72,48,0,-.34,0,0xdfe5ea);
+  // АЭС
+  const mw=new THREE.MeshLambertMaterial({color:0xf5f7fa});
+  const cyl=new THREE.Mesh(new THREE.CylinderGeometry(4.2,4.2,6,36),mw); cyl.position.set(-27,BASE+3,-4); scene.add(cyl);
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(4.2,36,18,0,Math.PI*2,0,Math.PI/2),mw); dome.position.set(-27,BASE+6,-4); scene.add(dome);
+  box(11,4.4,6.5,-17.5,BASE+2.2,-4,0xe3ecf5);
+  const cm=new THREE.MeshLambertMaterial({color:0xe8e3da,side:THREE.DoubleSide});
+  [[-24,9],[-12.5,9]].forEach(p=>{ const t=new THREE.Mesh(towerGeo(12,4.4,2.7),cm); t.position.set(p[0],BASE,p[1]); scene.add(t); emitters.push(makeEmitter(p[0],BASE+12,p[1],34,{color:0xffffff,rate:6,alpha:.8,size:1.3,rise:1.7})); });
+  // ЖЭО
+  box(8.5,13,8.5,10,BASE+6.5,-4,0xf0d9c4); box(10.5,4,6.5,19.5,BASE+2,-4,0xe6e0da); box(3,7,3,10,BASE+16.5,-4,0xe7d3c0);
+  const ch=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.7,25,20),new THREE.MeshLambertMaterial({color:0xe0d8d0})); ch.position.set(10,BASE+12.5,6); scene.add(ch);
+  [19,22].forEach(y=>{ const b=new THREE.Mesh(new THREE.CylinderGeometry(1.2-(y-19)*.02,1.3,1.3,20),new THREE.MeshLambertMaterial({color:0xe05a47})); b.position.set(10,BASE+y,6); scene.add(b); });
+  const t2=new THREE.Mesh(towerGeo(12,4.4,2.7),cm); t2.scale.set(.8,.8,.8); t2.position.set(21,BASE,9); scene.add(t2);
+  emitters.push(makeEmitter(21,BASE+9.6,9,28,{color:0xffffff,rate:4,alpha:.75,size:1.0,rise:1.5}));
+  emitters.push(makeEmitter(10,BASE+25.4,6,90,{color:0x555b61,rate:12,alpha:.8,size:1.1,rise:2.0})); // темекі
+  cubeN=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshLambertMaterial({color:0x2e7bd6})); scene.add(cubeN);
+  cubeT=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshLambertMaterial({color:0x4b4f55})); scene.add(cubeT);
+  resize(); bindPointer(); apply3D(); requestAnimationFrame(frame);
+}
+function apply3D(){
+  if(!webglOK) return;
+  const F=R.F, chim=emitters[emitters.length-1];
+  const inten=R.T.intens/950; // 0..1
+  chim.rate=1.5+inten*13; chim.color=F.color; chim.alpha=st.fuel==='gas'?.5:(.55+.3*inten);
+  chim.size=st.fuel==='gas'?.8:1.1;
+  // массаның кубтық түбірі
+  const ref=Math.cbrt(4.7e6); const sT=Math.max(.5,Math.cbrt(R.T.mass)/ref*7), sN=Math.max(.55,Math.cbrt(R.N.mass)/ref*7);
+  cubeT.scale.set(sT,sT,sT); cubeT.position.set(30,BASE+sT/2,9); cubeT.material.color.setHex(F.cube);
+  cubeN.scale.set(sN,sN,sN); cubeN.position.set(-31,BASE+sN/2,9);
+  labs.ft.textContent=(st.fuel==='coal'?'Көмір':(st.fuel==='gas'?'Газ (массасына теңестірілген)':'Мазут'))+' қоры (1 жылда)';
+  $('hint').textContent='Қоймалардағы текшелердің көлемі жылдық отын массасына пропорционал. Ядролық отын текшесі көрінуі үшін ең кіші өлшемге дейін үлкейтілген.';
+}
+function fitCam(){ if(!webglOK) return; const t=Math.tan(20*Math.PI/180); dist=Math.max(105,(46*1.08)/(t*camera.aspect),30/t*.95); }
+function resize(){ if(!webglOK) return; const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); fitCam(); drawAll(); }
+const _v=new THREE.Vector3();
+function placeLabel(k,x,y,z){ _v.set(x,y,z).project(camera); const w=stage.clientWidth,h=stage.clientHeight; labs[k].style.left=((_v.x+1)/2*w)+'px'; labs[k].style.top=((1-_v.y)/2*h)+'px'; }
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  az+=(azT-az)*.15; el+=(elT-el)*.15;
+  camera.position.set(Math.sin(az)*Math.cos(el)*dist, 8+Math.sin(el)*dist, Math.cos(az)*Math.cos(el)*dist);
+  camera.lookAt(0,7,0);
+  emitters.forEach(e=>updEmitter(e,dt));
+  placeLabel('n',-22,18,0); placeLabel('t',15,31,0); placeLabel('fn',-31,BASE+cubeN.scale.y+2.2,9); placeLabel('ft',30,BASE+cubeT.scale.y+2.2,9);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+function bindPointer(){
+  cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY}; cv.style.cursor='grabbing'; try{cv.setPointerCapture(e.pointerId);}catch(_){} });
+  cv.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    azT=clamp(azT+dx*.006,-1.3,1.3); if(e.pointerType!=='touch') elT=clamp(elT+dy*.004,.08,1.4); });
+  const up=()=>{drag=null; cv.style.cursor='grab';}; cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+}
+document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{
+  const v=b.dataset.view; if(v==='front'){azT=0;elT=.12;} else if(v==='angle'){azT=.55;elT=.42;} else {azT=0;elT=1.3;}
+}));
+
+/* ---------- Басқару ---------- */
+function syncControls(){
+  const F=FUELS[st.fuel];
+  $('s1').value=st.P; $('s2').value=st.cf; $('s4').value=st.carbon; $('s5').value=st.uprice; $('s6').value=st.capN; $('s7').value=st.capT; $('s8').value=st.rate;
+  const s3=$('s3'); s3.min=F.pmin; s3.max=F.pmax; s3.step=F.pstep; s3.value=st.price;
+  $('v1').textContent=nf(st.P)+' МВт'; $('v2').textContent=st.cf+' %'; $('v3').textContent=st.price+' '+F.unit; $('l3').textContent=F.full+' бағасы';
+  $('v4').textContent=st.carbon+' $/т'; $('v5').textContent=nf(st.uprice)+' $/кг'; $('v6').textContent=nf(st.capN)+' $/кВт'; $('v7').textContent=nf(st.capT)+' $/кВт'; $('v8').textContent=fm(st.rate,1)+' %';
+  [...$('segFuel').children].forEach(b=>b.classList.toggle('on',b.dataset.fuel===st.fuel));
+}
+function setFuel(f){ st.fuel=f; st.price=FUELS[f].pdef; st.capT=FUELS[f].capex; }
+$('segFuel').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; setFuel(b.dataset.fuel); update(); });
+const bind=(id,key,conv)=>$(id).addEventListener('input',e=>{ st[key]=conv?conv(e.target.value):+e.target.value; update(); });
+bind('s1','P'); bind('s2','cf'); bind('s3','price'); bind('s4','carbon'); bind('s5','uprice'); bind('s6','capN'); bind('s7','capT'); bind('s8','rate');
+const PRE={
+ base:{P:1000,cf:80,fuel:'coal',carbon:10,uprice:2300,capN:5000,rate:8},
+ cheap:{P:1000,cf:80,fuel:'coal',carbon:0,uprice:2300,capN:6500,rate:10,price:20},
+ carbon:{P:1000,cf:80,fuel:'coal',carbon:80,uprice:2300,capN:5000,rate:6},
+ gas:{P:1000,cf:80,fuel:'gas',carbon:20,uprice:2300,capN:5000,rate:8}
+};
+document.querySelectorAll('[data-pre]').forEach(b=>b.addEventListener('click',()=>{
+  const p=PRE[b.dataset.pre]; setFuel(p.fuel); Object.keys(p).forEach(k=>{ if(k!=='fuel') st[k]=p[k]; }); update();
+}));
+function update(){ R=calc(); syncControls(); apply3D(); drawAll(); }
+
+/* ---------- Сызбалар ---------- */
+function setupCanvas(c,h){ const W=c.parentElement.clientWidth-40; const dpr=Math.min(window.devicePixelRatio||1,2); c.style.width=W+'px'; c.style.height=h+'px'; c.width=W*dpr; c.height=h*dpr; const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,h); return {x:x,W:W,H:h}; }
+const CN='#3a8ee6', CT='#f29a4a';
+function drawLCOE(){
+  const c=$('ch1'); if(c.parentElement.clientWidth<100) return;
+  const {x,W,H}=setupCanvas(c,260);
+  const pl=62,pr=70,pt=34,pb=34, pw=W-pl-pr, bh=Math.min(54,(H-pt-pb)/2-14);
+  const mx=Math.max(R.N.lcoe,R.T.lcoe)*1.08; const X=v=>pl+v/mx*pw;
+  const cols=['#6aa6e8','#8fd0b0','#f2c14e','#e8806a'], names=['Күрделі салым','Пайдалану','Отын','CO₂ салығы'];
+  x.font='700 12px Nunito, sans-serif'; x.textBaseline='middle';
+  let lx=pl; names.forEach((n,i)=>{ x.fillStyle=cols[i]; x.fillRect(lx,11,12,12); x.fillStyle='#1b3550'; x.textAlign='left'; x.fillText(n,lx+17,17); lx+=x.measureText(n).width+36; });
+  [['АЭС',R.N,CN],['ЖЭО',R.T,CT]].forEach((r,k)=>{
+    const y=pt+10+k*(bh+22); let cx=pl;
+    x.fillStyle=r[2]; x.textAlign='right'; x.font='800 13px Nunito, sans-serif'; x.fillText(r[0],pl-8,y+bh/2);
+    r[1].parts.forEach((v,i)=>{
+      const w=(v*1000)/mx; if(!isFinite(w)) return;
+      const a=pl+(cx-pl)+(k===0?0:0); // placeholder
+      const ww=X(r[1].parts.slice(0,i+1).reduce((a,b)=>a+b,0))-cx;
+      x.fillStyle=cols[i]; x.fillRect(cx,y,Math.max(8,ww-cx)-cx+2,bh);
+      cx += Math.max(8,ww-cx)+8;
+    });
+    x.strokeStyle='#dfeaf5'; x.strokeRect(pl,y,pw,bh);
+  });
+  x.textAlign='left'; x.fillStyle='#1b3550'; x.font='700 12px Nunito, sans-serif'; x.fillText('LCOE (ц/kВт·сағ)',pl, H-10);
+  const arr=[['АЭС',R.N.lcoe,CN],['ЖЭО',R.T.lcoe,CT]];
+  arr.forEach((r,i)=>{ x.fillStyle=r[2]; x.beginPath(); x.arc(pl+pw*(r[1]/mx), pt+80+i*90, 5, 0, Math.PI*2); x.fill(); x.fillStyle='#1b3550'; x.fillText(r[0],pl+pw*(r[1]/mx)+10, pt+80+i*90+4); });
+}
+function drawCompare(){
+  const c=$('ch2'); if(c.parentElement.clientWidth<100) return;
+  const {x,W,H}=setupCanvas(c,260); const pad=68, pw=W-pad*2; 
+  const maxv=Math.max(R.N.co2,R.T.co2,R.N.waste,R.T.waste,R.N.mass,R.T.mass,1)*1.18;
+  const Y=v=>H-40-(v/maxv)*(H-90);
+  const X=(i,w)=>pad+i*(pw/(w-1));
+  const series=[{name:'CO₂', n:R.N.co2, t:R.T.co2, color:CN},{name:'Ластану',n:R.N.waste,t:R.T.waste,color:CT},{name:'Отын',n:R.N.mass,t:R.T.mass,color:'#4cb782'}];
+  x.font='700 12px Nunito, sans-serif'; x.fillStyle='#1b3550'; x.fillText('салыстырмалы', pad, 18);
+  series.forEach((s,i)=>{
+    const py=Y(0); x.strokeStyle=s.color; x.lineWidth=2; x.beginPath(); x.moveTo(X(0,2),Y(s.n)); x.lineTo(X(1,2),Y(s.t)); x.stroke();
+    x.fillStyle=s.color; x.beginPath(); x.arc(X(0,2),Y(s.n),5,0,Math.PI*2); x.fill(); x.beginPath(); x.arc(X(1,2),Y(s.t),5,0,Math.PI*2); x.fill();
+    x.fillStyle='#1b3550'; x.fillText(s.name, pad+30*i, H-14);
+  });
+  x.strokeStyle='#e5edf7'; x.beginPath(); x.moveTo(pad,H-40); x.lineTo(W-pad,H-40); x.stroke();
+  x.fillStyle='#59738d'; x.textAlign='center'; x.fillText('АЭС', pad, H-20); x.fillText('ЖЭО', W-pad, H-20);
+}
+function drawPayback(){
+  const c=$('ch3'); if(c.parentElement.clientWidth<100) return;
+  const {x,W,H}=setupCanvas(c,220); const pad=48, pw=W-pad*2; const ys=[R.N.total,R.T.total]; const maxv=Math.max(...ys)*1.1;
+  x.strokeStyle='#dfeaf5'; x.beginPath(); x.moveTo(pad,20); x.lineTo(pad,H-30); x.lineTo(W-pad,H-30); x.stroke();
+  const years=10; x.font='700 12px Nunito, sans-serif'; x.fillStyle='#1b3550';
+  for(let i=0;i<=years;i++){ const xx=pad+i*(pw/years); x.beginPath(); x.moveTo(xx,H-30); x.lineTo(xx,H-24); x.stroke(); x.fillText(i,xx-4,H-10); }
+  const curves=[['АЭС',R.N.total,R.N.mapA?R.N.mapA:[]],['ЖЭО',R.T.total,R.T.mapA?R.T.mapA:[]]];
+  const draw = (arr,color)=>{ x.strokeStyle=color; x.lineWidth=2; x.beginPath(); arr.forEach((val,i)=>{ const xx=pad+i*(pw/Math.max(1,arr.length-1)); const yy=H-30-(val/maxv)*(H-50); if(i===0) x.moveTo(xx,yy); else x.lineTo(xx,yy); }); x.stroke(); };
+  draw([R.N.capAnn,R.N.capAnn+R.N.opYear,R.N.capAnn+R.N.opYear*2,R.N.capAnn+R.N.opYear*3,R.N.capAnn+R.N.opYear*4,R.N.capAnn+R.N.opYear*5],CN);
+  draw([R.T.capAnn,R.T.capAnn+R.T.opYear,R.T.capAnn+R.T.opYear*2,R.T.capAnn+R.T.opYear*3,R.T.capAnn+R.T.opYear*4,R.T.capAnn+R.T.opYear*5],CT);
+  const breakEven=String(Math.ceil(Math.max(R.N.capAnn,R.T.capAnn)/Math.max(R.N.opYear,R.T.opYear,1))||1);
+  $('beNote').textContent='Шамамен өтелу мерзімі: АЭС ≈ '+breakEven+' жыл, ЖЭО ≈ '+Math.ceil((R.T.capAnn+R.T.opYear)/Math.max(R.T.opYear,1))+' жыл. Түзу сызықтар — құрылыс + жылдық эксплуатация шығындарының жинақталуы.';
+}
+function renderTable(){
+  const rows=[
+    ['Параметр','АЭС','ЖЭО'],
+    ['Электр қуаты', nf(R.E/1000,1)+' ГВт', nf(R.E/1000,1)+' ГВт'],
+    ['Отын массасы/қоры', massTxt(R.N.mass), fuelTxtT()],
+    ['CO₂, т/жыл', nf(R.N.co2,0), nf(R.T.co2,0)],
+    ['SO₂, т/жыл', '0', nf(R.T.so2,0)],
+    ['NOx, т/жыл', '0', nf(R.T.nox,0)],
+    ['Қатты қалдық, т/жыл', nf(R.N.waste,0), nf(R.T.waste,0)],
+    ['LCOE, ц/кВт·сағ', fm(R.N.lcoe,2), fm(R.T.lcoe,2)],
+    ['Жылдық эксплуатация, $', nf(R.N.opYear,0), nf(R.T.opYear,0)]
+  ];
+  let html='<tr>'+rows[0].map(h=>'<th>'+h+'</th>').join('')+'</tr>';
+  rows.slice(1).forEach(r=>html+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>');
+  $('tbl').innerHTML=html;
+}
+function renderStats(){
+  const cards=[
+    ['АЭС', R.N.lcoe, 'ц/кВт·сағ'],
+    ['ЖЭО', R.T.lcoe, 'ц/кВт·сағ'],
+    ['CO₂', Math.max(R.N.co2,R.T.co2), 'т/жыл']
+  ];
+  $('stat3').innerHTML = cards.map((c,i)=>`<div class="card"><span>${c[0]}</span><b>${nf(c[1],c[1] < 10 ? 2 : 0)}</b><span>${c[2]}</span></div>`).join('');
+}
+function drawAll(){ renderStats(); drawLCOE(); drawCompare(); drawPayback(); renderTable(); } 
+
+/* ---------- Заңдылық: қорғаныс ---------- */
+const critKeys=['w1','w2','w3','w4','w5'];
+function scoreFor(type){
+  const w={w1:+$('w1').value,w2:+$('w2').value,w3:+$('w3').value,w4:+$('w4').value,w5:+$('w5').value};
+  const a={a1:+$('a1').value,a2:+$('a2').value};
+  const n=(w.w1*(1 - Math.min(R.N.co2 / Math.max(R.T.co2,1),1)) + w.w2*(1 - Math.min(R.N.waste/Math.max(R.T.waste,1),1)) + w.w3*(1 - Math.min(R.N.lcoe/Math.max(R.T.lcoe,1),1)) + w.w4*(1 - Math.min(R.N.mass/Math.max(R.T.mass,1),1)) + w.w5*(1 - Math.min((10-a1)/(10-a2||1),1)) )/5;
+  return {n:n};
+}
+function updateDefense(){
+  critKeys.forEach(k=>{$(k+'v').textContent=$(k).value;});
+  ['a1','a2'].forEach(k=>{$(k+'v').textContent=$(k).value;});
+  const scoreN = 50 + ((+$('w1').value * (R.T.co2 > 0 ? (Math.max(0, 1 - R.N.co2 / R.T.co2)) : 0.5) + +$('w2').value*(R.T.waste > 0 ? (1 - R.N.waste/R.T.waste) : 0.5) + +$('w3').value*(R.T.lcoe > 0 ? (1 - R.N.lcoe/R.T.lcoe) : 0.5) + +$('w4').value*(R.T.mass > 0 ? (1 - R.N.mass/R.T.mass) : 0.5) + +$('w5').value*(1 - ((+$('a1').value - 1) / 9))) / 5;
+  const scoreT = 50 + ((+$('w1').value * (R.N.co2 > 0 ? (1 - R.T.co2 / R.N.co2) : 0.5) + +$('w2').value*(R.N.waste > 0 ? (1 - R.T.waste/R.N.waste) : 0.5) + +$('w3').value*(R.N.lcoe > 0 ? (1 - R.T.lcoe/R.N.lcoe) : 0.5) + +$('w4').value*(R.N.mass > 0 ? (1 - R.T.mass/R.N.mass) : 0.5) + +$('w5').value*(1 - ((+$('a2').value - 1) / 9))) / 5;
+  const total = Math.max(0, Math.min(100, scoreN));
+  const totalT = Math.max(0, Math.min(100, scoreT));
+  $('scN').textContent=fm(total,1)+' / 100'; $('scT').textContent=fm(totalT,1)+' / 100';
+  $('barN').firstElementChild.style.width = total+'%'; $('barT').firstElementChild.style.width = totalT+'%';
+  const win = total>totalT?'АЭС басым':'ЖЭО басым';
+  $('verdict').textContent = total===totalT ? 'Нәтиже тең. Сіздің критерийлеріңізде басқа факторларды ескеру керек.' : win + ' — сіздің салмақтарыңыз бойынша осы нұсқа тиімдірек.';
+  const crit=[
+    ['CO₂', Math.max(0, (1 - R.N.co2/Math.max(R.T.co2,1))*10), Math.max(0, (1 - R.T.co2/Math.max(R.N.co2,1))*10)],
+    ['SO₂/NOx/шаң', Math.max(0, (1 - R.N.waste/Math.max(R.T.waste,1))*10), Math.max(0, (1 - R.T.waste/Math.max(R.N.waste,1))*10)],
+    ['LCOE', Math.max(0, (1 - R.N.lcoe/Math.max(R.T.lcoe,1))*10), Math.max(0, (1 - R.T.lcoe/Math.max(R.N.lcoe,1))*10)],
+    ['Отын + тасымал', Math.max(0, (1 - R.N.mass/Math.max(R.T.mass,1))*10), Math.max(0, (1 - R.T.mass/Math.max(R.N.mass,1))*10)],
+    ['Қауіпсіздік', Math.max(0, ((+$('a1').value)-1)*10/9), Math.max(0, ((+$('a2').value)-1)*10/9)]
+  ];
+  $('critTbl').innerHTML='<tr><th>Критерий</th><th>АЭС</th><th>ЖЭО</th></tr>'+crit.map(r=>`<tr><td>${r[0]}</td><td>${fm(r[1],1)}</td><td>${fm(r[2],1)}</td></tr>`).join('');
+  buildScript(total,totalT);
+}
+function buildScript(scN,scT){
+  const winner=scN>=scT?'АЭС':'ЖЭО';
+  const text = `Менің таңдауыма сәйкес ${winner} тиімдірек. Біріншіден, ${winner === 'АЭС' ? 'АЭС-тің отын шығыны өте аз, сондықтан жылына қажет отын мөлшері ЖЭО-мен салыстырғанда әлдеқайда төмен.' : 'ЖЭО-да құрылыс құны төмен, ал көміртегі бағасы өзгерген кезде оны экономикалық түрде оңтайлы етіп пайдалануға болады.'}\n\nЕкіншіден, ${winner === 'АЭС' ? 'АЭС-тің CO₂ және SO₂ шығарындысы ЖЭО-мен салыстырғанда әлдеқайда төмен, сондықтан қоршаған ортаға әсері аз.' : 'ЖЭО-ның электр энергиясының өзіндік құны кейбір жағдайларда төмен болуы мүмкін, әсіресе арзан отын мен төмен көміртегі салығы бар жағдайда.'}\n\nҮшіншіден, ${winner === 'АЭС' ? 'АЭС-тің қауіпсіздік мәселесі шешілмегенімен, оның экологиялық тиімділігі мен отын қорын ескерсек, ұзақ мерзімді таңдауда басым нұсқа болып табылады.' : 'ЖЭО-ның технологиясы қарапайым, салымдары аз, сондықтан қысқа мерзімді жобалар үшін тиімдірек болуы мүмкін.'}\n\nСондықтан менің жобадағы қорытындым: ${winner} — электр энергиясының тұрақты, экологиялық және экономикалық тиімділігі тұрғысынан жалпы таңдауды анықтайтын нұсқа.`;
+  $('script').textContent=text;
+}
+['w1','w2','w3','w4','w5','a1','a2'].forEach(id=>$(id).addEventListener('input',updateDefense));
+$('bCopy').addEventListener('click',()=>{
+  const txt=$('script').textContent; try{ navigator.clipboard.writeText(txt).then(()=>toast('Мәтін көшірілді'),()=>toast('Көшіру мүмкін болмады')); }catch(e){ toast('Көшіру мүмкін болмады'); }
+});
+
+/* ---------- Викторина ---------- */
+const quiz=[
+  {q:'АЭС-те негізгі жылу қайдан шығады?', a:['Уран ядроларының бөлінуінен','Көмір жануынан','Жаңбыр суынан'], ok:0, exp:'Уран ядролары бөлінгенде үлкен жылу мөлшері бөлінеді.'},
+  {q:'ЖЭО-дағы негізгі ластаушы газ қандай?', a:['CO₂','Гелий','Аргон'], ok:0, exp:'Көмір, газ немесе мазут жанғанда күлді және көмірқышқыл газын түзеді.'},
+  {q:'ЖЭО-да отын масса қандай жағдайда көп болады?', a:['Қуат жоғары, ПӘК төмен, отын бағасы жоғары','Қуат аз, ПӘК жоғары','Су суық болғанда'], ok:0, exp:'Сондықтан бірден көп энергия өндіру үшін көбірек отын қажет.'},
+  {q:'LCOE нені білдіреді?', a:['1 кВт·сағ электр энергиясының орташа құны','Қолданатын турбина санын','Станция биіктігін'], ok:0, exp:'Ең негізгі экономикалық көрсеткіш — бір киловатт-сағат энергия құны.'},
+  {q:'Көміртегі салығы артқан кезде не болады?', a:['ЖЭО-ның экономикалық тиімділігі төмендейді','АЭС-тің құны артады','Турбина жоғарлайды'], ok:0, exp:'ЖЭО-да CO₂ шығарындылары көп, сондықтан салығы артқан сайын оның құны өседі.'},
+  {q:'АЭС-тің басты кемшілігі не?', a:['Радиоактивті қалдықтарды сақтау және авария қаупі','Бос энергия аз','Түпкі өнім — мұз'], ok:0, exp:'Бұл мәселе АЭС-ті ең қатаң және қадағаланып қызмет етуге мәжбүр етеді.'}
+];
+function renderQuiz(){ const wrap=$('quiz'); wrap.innerHTML=''; quiz.forEach((q,i)=>{ const card=document.createElement('div'); card.className='q'; card.innerHTML=`<p>${i+1}. ${q.q}</p><div class='opts'></div><div class='exp'></div>`; const opts=card.querySelector('.opts'); q.a.forEach((a,j)=>{ const b=document.createElement('button'); b.className='opt'; b.textContent=a; b.addEventListener('click',()=>{ const exp=card.querySelector('.exp'); const isok=j===q.ok; b.classList.add(isok?'ok':'bad'); [...opts.children].forEach(x=>x.disabled=true); exp.textContent=(isok?'Дұрыс! ':'Ұқпас. ') + q.exp; exp.style.display='block'; }); opts.appendChild(b); }); wrap.appendChild(card); }); }
+$('qReset').addEventListener('click',renderQuiz);
+renderQuiz();
+
+/* ----------.Toast ---------- */
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1800); }
+
+/* ---------- Init ---------- */
+function init(){
+  init3D(); syncControls(); update(); updateDefense(); drawAll();
+  $('v1').textContent=nf(st.P)+' МВт';
+  $('script').textContent='Мен жобаны ...';
+}
+window.addEventListener('resize',()=>{ resize(); drawAll(); });
+init();
+})();
+</script>
+</body>
+</html>
